@@ -1,7 +1,8 @@
 package com.xianqu.service;
 
-import com.xianqu.entity.UserEntity;
+import com.xianqu.bean.User;
 import com.xianqu.mapper.UserMapper;
+import com.xianqu.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,11 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<UserEntity> getAll(){
+    public List<User> getAll(){
         return userMapper.getAll();
+    }
+
+    public UserVo findUserByName(String username) {
+        return userMapper.findUserByName(username);
     }
 }
