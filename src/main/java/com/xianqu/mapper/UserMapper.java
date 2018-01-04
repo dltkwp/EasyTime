@@ -1,13 +1,23 @@
 package com.xianqu.mapper;
 
 import com.xianqu.bean.User;
-import com.xianqu.vo.UserVo;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface UserMapper {
-    List<User> getAll();
+    int deleteByPrimaryKey(Long id);
 
-    UserVo findUserByName(@Param(value = "username") String username);
+    int insert(User record);
+
+    int insertSelective(User record);
+
+    User selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(User record);
+
+    int updateByPrimaryKey(User record);
+
+    User selectByUsername(String username);
+
+    List<User> selectAll();
 }

@@ -5,14 +5,3 @@ spring:
     url: jdbc:mysql://39.106.67.235:3306/EasyTime?useUnicode=true&characterEncoding=utf-8&useSSL=true
     username: root
     password: wenchen123
-  redis:
-    database: 0
-    host: 39.106.67.235
-    port: 6379
-    password: wenchen123
-    timeout: 0
-    pool:
-      max-active: 8
-      max-wait: -1
-      max-idle: 8
-      min-idle: 0
