@@ -1,8 +1,21 @@
 package com.xianqu.mapper;
 
 import com.xianqu.bean.Role;
-import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface RoleMapper {
-    Role findRoleById(@Param(value = "uid") Integer userId);
+    int deleteByPrimaryKey(Long id);
+
+    int insert(Role record);
+
+    int insertSelective(Role record);
+
+    Role selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(Role record);
+
+    int updateByPrimaryKey(Role record);
+
+    List<String> findRoleByUserId(Long userId);
 }

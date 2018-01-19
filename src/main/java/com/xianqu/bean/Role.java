@@ -2,6 +2,7 @@ package com.xianqu.bean;
 
 public class Role {
     private Long id;
+
     private String roleName;
 
     public Long getId() {
@@ -17,14 +18,6 @@ public class Role {
     }
 
     public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", roleName='" + roleName + '\'' +
-                '}';
+        this.roleName = roleName == null ? null : roleName.trim();
     }
 }

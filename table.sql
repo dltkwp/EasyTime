@@ -18,11 +18,32 @@ CREATE TABLE `t_role` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
 
+CREATE TABLE `t_user_role` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `uid` bigint(20) NOT NULL COMMENT '用户ID',
+  `rid` bigint(20) NOT NULL COMMENT '角色ID',
+  PRIMARY KEY (`id`),
+  foreign key(`uid`) references t_user(`id`),
+  foreign key(`rid`) references t_role(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户角色表';
+
+
 CREATE TABLE `t_categories` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `categories_name` varchar(20) NOT NULL COMMENT '类型名称',
   `user_id` bigint(20) NOT NULL COMMENT '用户名称',
   PRIMARY KEY (`id`),
   foreign key(`user_id`) references t_user(`id`)
-)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
+
+insert into t_role(role_name) values('dealer');
+insert into t_role(role_name) values('agent');
+
+insert into t_user_role(uid, rid) values(1, 1);
+insert into t_user_role(uid, rid) values(1, 2);
+insert into t_user_role(uid, rid) values(2, 1);
+insert into t_user_role(uid, rid) values(2, 2);
+insert into t_user_role(uid, rid) values(3, 1);
+insert into t_user_role(uid, rid) values(3, 2);
+
 

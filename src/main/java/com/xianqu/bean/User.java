@@ -1,29 +1,50 @@
 package com.xianqu.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import jdk.nashorn.internal.ir.annotations.Ignore;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@ApiModel(value = "User", description = "用户对象")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User implements Serializable {
     private static final long serialVersionUID = 9196447971812203657L;
 
+    @ApiModelProperty(value = "ID", hidden=true)
     private Long id;
 
+    @ApiModelProperty(value = "用户名", hidden=true)
     private String username;
 
+    @ApiModelProperty(value = "密码", hidden=true)
     private String password;
 
+    @ApiModelProperty(value = "名称")
     private String realname;
 
+    @ApiModelProperty(value = "电话")
     private String phone;
 
+    @ApiModelProperty(value = "微信")
     private String wechart;
 
+    @ApiModelProperty(value = "支付宝")
     private String alipay;
 
+    @ApiModelProperty(value = "创建时间", hidden=true)
+    @JsonIgnore
     private Date createDate;
 
+    @ApiModelProperty(value = "更新时间", hidden=true)
+    @JsonIgnore
     private Date updateDate;
 
+    @ApiModelProperty(value = "是否删除", hidden=true)
+    @JsonIgnore
     private Boolean isDelete;
 
     public Long getId() {

@@ -41,4 +41,6 @@ public class UserService {
     public User findByUsername(String username) {
         return userMapper.selectByUsername(username);
     }
+
+    public int updateByPrimaryKeySelective(User user) { return userMapper.updateByPrimaryKeySelective(user); }
 }

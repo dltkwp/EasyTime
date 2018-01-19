@@ -2,56 +2,64 @@ package com.xianqu.action;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xianqu.bean.User;
+import io.swagger.annotations.*;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller
+@RestController
 @CrossOrigin
+@Api(value="登录登出controller",description="登录登出操作",tags={"登录登出接口"})
 public class LoginController {
-    @ResponseBody
-    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
-    public String login(@RequestBody User userInfo) {
 
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ApiOperation(value="登录", notes="根据用户名和密码登录")
+    @ApiResponses({
+        @ApiResponse(code = 1000200, message = "登录成功")
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "query"),
+        @ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "String", paramType = "query")
+    })
+    public String login(@ApiIgnore @RequestBody User userInfo) throws Exception{
         JSONObject jsonObject = new JSONObject();
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(userInfo.getUsername(), userInfo.getPassword());
-        try {
-            subject.login(token);
-            jsonObject.put("token", subject.getSession().getId());
-            jsonObject.put("code", "100001");
-            jsonObject.put("msg", "登录成功");
-        } catch (IncorrectCredentialsException e) {
-            jsonObject.put("code", "100002");
-            jsonObject.put("msg", "密码错误");
-        } catch (LockedAccountException e) {
-            jsonObject.put("code", "100003");
-            jsonObject.put("msg", "登录失败，该用户已被冻结");
-        } catch (AuthenticationException e) {
-            jsonObject.put("code", "100004");
-            jsonObject.put("msg", "该用户不存在");
-        } catch (Exception e) {
-            e.printStackTrace();
-            jsonObject.put("code", "100500");
-            jsonObject.put("msg", "未知错误");
-        }
+        subject.login(token);
+        jsonObject.put("token", subject.getSession().getId());
+        jsonObject.put("code", 1000200);
+        jsonObject.put("msg", "登录成功");
         return jsonObject.toString();
     }
 
+    @ApiIgnore
     @RequestMapping(value = "/unauth")
-    @ResponseBody
     public Object unauth() {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("code", "1000000");
+        map.put("code", 1000000);
         map.put("msg", "未登录");
+        return map;
+    }
+
+    @ApiOperation(value="登出", notes="退出登录")
+    @ApiResponses({
+        @ApiResponse(code = 1000201, message = "已退出登录")
+    })
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public Object logout() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            subject.logout();
+        }
+        map.put("code", 1000201);
+        map.put("msg", "已退出登录");
         return map;
     }
 }
