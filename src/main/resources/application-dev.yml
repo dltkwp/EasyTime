@@ -5,3 +5,10 @@ spring:
     url: jdbc:mysql://39.106.67.235:3306/EasyTime?useUnicode=true&characterEncoding=utf-8&useSSL=true
     username: root
     password: wenchen123
+
+redis:
+  shiro:
+    host: 39.106.67.235
+    port: 6379
+    password: wenchen123
+    timeout: 0

@@ -46,10 +46,8 @@ public class MyShiroRealm extends AuthorizingRealm {
             ByteSource.Util.bytes(userInfo.getUsername() + "xianqu"),//salt=username+salt
             getName()  //realm name
         );
-
         Session session = SecurityUtils.getSubject().getSession();
-        session.setAttribute("userSession", userInfo);
-        session.setAttribute("userSessionId", userInfo.getId());
+        session.setAttribute("user", userInfo);
         return authenticationInfo;
     }
 
@@ -63,7 +61,5 @@ public class MyShiroRealm extends AuthorizingRealm {
         info.addRoles(roleList);
         return info;
     }
-
-
 
 }

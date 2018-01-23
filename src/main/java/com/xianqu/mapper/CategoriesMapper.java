@@ -1,6 +1,7 @@
 package com.xianqu.mapper;
 
 import com.xianqu.bean.Categories;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface CategoriesMapper {
     int updateByPrimaryKey(Categories record);
 
     List<Categories> getListByUserId(Long userId);
+
+    Categories selectByName(@Param("categoriesName") String categoriesName, @Param("userId") Long userId);
 }

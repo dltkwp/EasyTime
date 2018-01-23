@@ -11,10 +11,3 @@ mybatis:
   type-aliases-package: com.xianqu.bean,com.xianqu.vo
   mapper-locations: classpath:mapper/*.xml
 
-redis:
-  shiro:
-    host: 39.106.67.235
-    port: 6379
-    password: wenchen123
-    timeout: 0
-

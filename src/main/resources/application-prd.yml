@@ -2,6 +2,13 @@ spring:
   profiles: prd
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://39.106.67.235:3306/EasyTime?useUnicode=true&characterEncoding=utf-8&useSSL=true
+    url: jdbc:mysql://172.17.150.218:3306/EasyTime?useUnicode=true&characterEncoding=utf-8&useSSL=true
     username: root
     password: wenchen123
+
+redis:
+  shiro:
+    host: 172.17.150.218
+    port: 6379
+    password: wenchen123
+    timeout: 0

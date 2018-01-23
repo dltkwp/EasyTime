@@ -25,6 +25,10 @@ public class CategoriesService {
     }
 
     public int insert(Categories categories) {
+        Categories hasCategories = categoriesMapper.selectByName(categories.getCategoriesName(), categories.getUserId());
+        if(null != hasCategories) {
+            throw new RuntimeException("分类名已存在");
+        }
         return categoriesMapper.insert(categories);
     }
 
@@ -34,6 +38,10 @@ public class CategoriesService {
     }
 
     public int update(Categories categories) {
+        Categories hasCategories = categoriesMapper.selectByName(categories.getCategoriesName(), categories.getUserId());
+        if(null != hasCategories) {
+            throw new RuntimeException("分类名已存在");
+        }
         return categoriesMapper.updateByPrimaryKeySelective(categories);
     }
 }

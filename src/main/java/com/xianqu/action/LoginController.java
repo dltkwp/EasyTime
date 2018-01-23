@@ -1,11 +1,18 @@
 package com.xianqu.action;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xianqu.bean.PasswordVo;
+import com.xianqu.bean.Result;
 import com.xianqu.bean.User;
+import com.xianqu.service.UserService;
+import com.xianqu.util.ResultUtil;
 import io.swagger.annotations.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ByteSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -14,9 +21,13 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
-@Api(value="登录登出controller",description="登录登出操作",tags={"登录登出接口"})
+@Api(value="登录登出修改密码controller",description="登录登出修改密码操作",tags={"登录登出修改密码接口"})
 public class LoginController {
 
+    private static final String SALT = "xianqu";
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value="登录", notes="根据用户名和密码登录")
@@ -61,5 +72,28 @@ public class LoginController {
         map.put("code", 1000201);
         map.put("msg", "已退出登录");
         return map;
+    }
+
+    @ApiOperation(value="修改密码", notes="修改密码")
+    @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
+    @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
+    public Result updatePassword(@RequestBody PasswordVo passwordVo) {
+        if(!passwordVo.getNewPassword1().equals(passwordVo.getNewPassword2())) {
+            throw new RuntimeException("两次输入密码不一致");
+        }
+        User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
+        User cur = userService.getUserInfoById(userSession.getId());
+        String password= new SimpleHash("MD5", passwordVo.getOldPassword(), ByteSource.Util.bytes(cur.getUsername() + SALT),2).toHex();
+        if(!password.equals(cur.getPassword())) {
+            throw new RuntimeException("密码错误");
+        }
+
+        String newPassword= new SimpleHash("MD5", passwordVo.getNewPassword1(), ByteSource.Util.bytes(cur.getUsername() + SALT),2).toHex();
+        User newUser = new User();
+        newUser.setId(userSession.getId());
+        newUser.setPassword(newPassword);
+        userService.updateByPrimaryKeySelective(newUser);
+
+        return ResultUtil.success();
     }
 }
