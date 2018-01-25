@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xianqu.mapper.DistributorLevelMapper">
+  <resultMap id="BaseResultMap" type="com.xianqu.bean.DistributorLevel">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="level_name" jdbcType="VARCHAR" property="levelName" />
+    <result column="discount" jdbcType="BIGINT" property="discount" />
+    <result column="initial_fee" jdbcType="DECIMAL" property="initialFee" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, level_name, discount, initial_fee, user_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_distributor_level
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getListByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_distributor_level
+    where user_id = #{userId,jdbcType=BIGINT}
+  </select>
+  <select id="selectByName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_distributor_level
+    where user_id = #{userId,jdbcType=BIGINT} and level_name = #{levelName, jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_distributor_level
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.xianqu.bean.DistributorLevel">
+    insert into t_distributor_level (id, level_name, discount,
+      initial_fee, user_id)
+    values (#{id,jdbcType=BIGINT}, #{levelName,jdbcType=VARCHAR}, #{discount,jdbcType=BIGINT},
+      #{initialFee,jdbcType=DECIMAL}, #{userId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xianqu.bean.DistributorLevel">
+    insert into t_distributor_level
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="levelName != null">
+        level_name,
+      </if>
+      <if test="discount != null">
+        discount,
+      </if>
+      <if test="initialFee != null">
+        initial_fee,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="levelName != null">
+        #{level_name,jdbcType=VARCHAR},
+      </if>
+      <if test="discount != null">
+        #{discount,jdbcType=BIGINT},
+      </if>
+      <if test="initialFee != null">
+        #{initialFee,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xianqu.bean.DistributorLevel">
+    update t_distributor_level
+    <set>
+      <if test="levelName != null">
+        level_name = #{levelName,jdbcType=VARCHAR},
+      </if>
+      <if test="discount != null">
+        discount = #{discount,jdbcType=BIGINT},
+      </if>
+      <if test="initialFee != null">
+        initial_fee = #{initialFee,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xianqu.bean.DistributorLevel">
+    update t_distributor_level
+    set level_name = #{levelName,jdbcType=VARCHAR},
+      discount = #{discount,jdbcType=BIGINT},
+      initial_fee = #{initialFee,jdbcType=DECIMAL},
+      user_id = #{userId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

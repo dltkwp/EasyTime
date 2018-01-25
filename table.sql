@@ -46,4 +46,70 @@ insert into t_user_role(uid, rid) values(2, 2);
 insert into t_user_role(uid, rid) values(3, 1);
 insert into t_user_role(uid, rid) values(3, 2);
 
+CREATE TABLE `t_distributor_level` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `level_name` varchar(20) NOT NULL COMMENT '分销等级',
+  `discount` bigint(3) NOT NULL COMMENT '默认折扣',
+  `initial_fee` DECIMAL(10,2) COMMENT '加盟费',
+  `user_id` bigint(20) NOT NULL COMMENT '用户名称',
+  PRIMARY KEY (`id`),
+  foreign key(`user_id`) references t_user(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分销等级';
+
+CREATE TABLE `t_product` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `product_no` bigint(20) COMMENT '商品编号',
+  `product_name` varchar(20) NOT NULL COMMENT '商品名称',
+  `categories_id` bigint(20) COMMENT '分类ID',
+  `cost` DECIMAL(5, 2) COMMENT '成本',
+  `recommended_retail_price` DECIMAL(10,2) COMMENT '建议售价',
+  `min_retail_price` DECIMAL(10,2) COMMENT '最低售价',
+  `stock` bigint(10) COMMENT '库存',
+  `status` bit(1) DEFAULT b'1' COMMENT '订单状态 1-在售, 0-停售',
+  `create_date` datetime COMMENT '创建时间',
+  `create_user` bigint(20) COMMENT '创建用户',
+  `update_date` datetime COMMENT '更新时间',
+  `update_user` bigint(20) COMMENT '更新用户',
+  `is_delete` bit(1) DEFAULT b'0' COMMENT '删除标识',
+  PRIMARY KEY (`id`),
+  foreign key(`create_user`) references t_user(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品表';
+
+CREATE TABLE `t_product_description` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `product_id` bigint(20) NOT NULL COMMENT '商品ID',
+  `description` text COMMENT '商品描述',
+  `create_date` datetime COMMENT '创建时间',
+  `create_user` bigint(20) COMMENT '创建用户',
+  `update_date` datetime COMMENT '更新时间',
+  `update_user` bigint(20) COMMENT '更新用户',
+  `is_delete` bit(1) DEFAULT b'0' COMMENT '删除标识',
+  PRIMARY KEY (`id`),
+  foreign key(`product_id`) references t_product(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品描述表';
+
+CREATE TABLE `t_product_price` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `product_id` bigint(20) NOT NULL COMMENT '商品ID',
+  `distributor_level_id` bigint(20) COMMENT '分销等级',
+  `price` DECIMAL(10,2) COMMENT '分销价格',
+  `create_date` datetime COMMENT '创建时间',
+  `create_user` bigint(20) COMMENT '创建用户',
+  `update_date` datetime COMMENT '更新时间',
+  `update_user` bigint(20) COMMENT '更新用户',
+  `is_delete` bit(1) DEFAULT b'0' COMMENT '删除标识',
+  PRIMARY KEY (`id`),
+  foreign key(`product_id`) references t_product(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品价格表';
+
+CREATE TABLE `t_product_image` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `product_id` bigint(20) NOT NULL COMMENT '商品ID',
+  `image_code` VARCHAR(20) COMMENT '图片地址',
+  `order` int(10) COMMENT '顺序',
+  `create_date` datetime COMMENT '创建时间',
+  `create_user` bigint(20) COMMENT '创建用户',
+  PRIMARY KEY (`id`),
+  foreign key(`product_id`) references t_product(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品图片表';
 
