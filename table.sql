@@ -113,3 +113,19 @@ CREATE TABLE `t_product_image` (
   foreign key(`product_id`) references t_product(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品图片表';
 
+CREATE TABLE `t_order` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `product_id` bigint(20) COMMENT '商品ID',
+  `content` VARCHAR(200) COMMENT '订单内容',
+  `content` bigint(20) COMMENT '收件人',
+  `content` VARCHAR(20) COMMENT '收货电话',
+  `content` VARCHAR(200) COMMENT '收件地址',
+  `create_date` datetime COMMENT '创建时间',
+  `create_user` bigint(20) COMMENT '创建用户',
+  `update_date` datetime COMMENT '更新时间',
+  `update_user` bigint(20) COMMENT '更新用户',
+  PRIMARY KEY (`id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表';
+
+
+

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xianqu.mapper.ProductPriceMapper">
+  <resultMap id="BaseResultMap" type="com.xianqu.bean.ProductPrice">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="distributor_level_id" jdbcType="BIGINT" property="distributorLevelId" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="BIGINT" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="BIGINT" property="updateUser" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, product_id, distributor_level_id, price, create_date, create_user, update_date, 
+    update_user, is_delete
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_product_price
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByProductId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_product_price
+    WHERE product_id = #{productId, jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_product_price
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByProductId" parameterType="java.lang.Long">
+    delete from t_product_price
+    where product_id = #{productId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.xianqu.bean.ProductPrice">
+    insert into t_product_price (id, product_id, distributor_level_id, 
+      price, create_date, create_user, 
+      update_date, update_user, is_delete
+      )
+    values (#{id,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{distributorLevelId,jdbcType=BIGINT}, 
+      #{price,jdbcType=DECIMAL}, #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=BIGINT}, #{isDelete,jdbcType=BIT}
+      )
+  </insert>
+  <insert id="insertByList">
+    INSERT INTO t_product_price (id, product_id, distributor_level_id,
+    price, create_date, create_user,
+    update_date, update_user, is_delete
+    )
+    VALUES
+    <foreach collection="prices" item="price" separator=",">
+      (#{price.id,jdbcType=BIGINT}, #{price.productId,jdbcType=BIGINT}, #{price.distributorLevelId,jdbcType=BIGINT},
+      #{price.price,jdbcType=DECIMAL}, #{price.createDate,jdbcType=TIMESTAMP}, #{price.createUser,jdbcType=BIGINT},
+      #{price.updateDate,jdbcType=TIMESTAMP}, #{price.updateUser,jdbcType=BIGINT}, #{price.isDelete,jdbcType=BIT})
+    </foreach>
+  </insert>
+  <insert id="insertSelective" parameterType="com.xianqu.bean.ProductPrice">
+    insert into t_product_price
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="distributorLevelId != null">
+        distributor_level_id,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="distributorLevelId != null">
+        #{distributorLevelId,jdbcType=BIGINT},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xianqu.bean.ProductPrice">
+    update t_product_price
+    <set>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="distributorLevelId != null">
+        distributor_level_id = #{distributorLevelId,jdbcType=BIGINT},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xianqu.bean.ProductPrice">
+    update t_product_price
+    set product_id = #{productId,jdbcType=BIGINT},
+      distributor_level_id = #{distributorLevelId,jdbcType=BIGINT},
+      price = #{price,jdbcType=DECIMAL},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=BIGINT},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=BIGINT},
+      is_delete = #{isDelete,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

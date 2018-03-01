@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xianqu.mapper.ProductMapper">
+  <resultMap id="BaseResultMap" type="com.xianqu.bean.Product">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_no" jdbcType="BIGINT" property="productNo" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="categories_id" jdbcType="BIGINT" property="categoriesId" />
+    <result column="cost" jdbcType="DECIMAL" property="cost" />
+    <result column="recommended_retail_price" jdbcType="DECIMAL" property="recommendedRetailPrice" />
+    <result column="min_retail_price" jdbcType="DECIMAL" property="minRetailPrice" />
+    <result column="stock" jdbcType="BIGINT" property="stock" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="BIGINT" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="BIGINT" property="updateUser" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, product_no, product_name, categories_id, cost, recommended_retail_price, min_retail_price, 
+    stock, status, create_date, create_user, update_date, update_user, is_delete
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_product
+    where id = #{id,jdbcType=BIGINT} AND is_delete = 0
+  </select>
+  <select id="selectByName" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_product
+    where create_user = #{userId,jdbcType=BIGINT} and product_name = #{productName, jdbcType=VARCHAR} AND is_delete = 0
+  </select>
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_product
+    where create_user = #{userId,jdbcType=BIGINT} AND is_delete = 0
+    <if test="productName != null and productName != ''">
+      AND product_name = #{productName,jdbcType=VARCHAR}
+    </if>
+    <if test="categoriesId != null and categoriesId != ''">
+      AND categories_id = #{categoriesId,jdbcType=BIGINT}
+    </if>
+    <if test="status != null">
+      AND status = #{status,jdbcType=BIT}
+    </if>
+    ORDER BY update_date DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_product
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.xianqu.bean.Product">
+    insert into t_product (id, product_no, product_name, 
+      categories_id, cost, recommended_retail_price, 
+      min_retail_price, stock, status, 
+      create_date, create_user, update_date, 
+      update_user, is_delete)
+    values (#{id,jdbcType=BIGINT}, #{productNo,jdbcType=BIGINT}, #{productName,jdbcType=VARCHAR}, 
+      #{categoriesId,jdbcType=BIGINT}, #{cost,jdbcType=DECIMAL}, #{recommendedRetailPrice,jdbcType=DECIMAL}, 
+      #{minRetailPrice,jdbcType=DECIMAL}, #{stock,jdbcType=BIGINT}, #{status,jdbcType=BIT}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=BIGINT}, #{isDelete,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xianqu.bean.Product">
+    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productNo != null">
+        product_no,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="categoriesId != null">
+        categories_id,
+      </if>
+      <if test="cost != null">
+        cost,
+      </if>
+      <if test="recommendedRetailPrice != null">
+        recommended_retail_price,
+      </if>
+      <if test="minRetailPrice != null">
+        min_retail_price,
+      </if>
+      <if test="stock != null">
+        stock,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="productNo != null">
+        #{productNo,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoriesId != null">
+        #{categoriesId,jdbcType=BIGINT},
+      </if>
+      <if test="cost != null">
+        #{cost,jdbcType=DECIMAL},
+      </if>
+      <if test="recommendedRetailPrice != null">
+        #{recommendedRetailPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="minRetailPrice != null">
+        #{minRetailPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="stock != null">
+        #{stock,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xianqu.bean.Product">
+    update t_product
+    <set>
+      <if test="productNo != null">
+        product_no = #{productNo,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoriesId != null">
+        categories_id = #{categoriesId,jdbcType=BIGINT},
+      </if>
+      <if test="cost != null">
+        cost = #{cost,jdbcType=DECIMAL},
+      </if>
+      <if test="recommendedRetailPrice != null">
+        recommended_retail_price = #{recommendedRetailPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="minRetailPrice != null">
+        min_retail_price = #{minRetailPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="stock != null">
+        stock = #{stock,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xianqu.bean.Product">
+    update t_product
+    set product_no = #{productNo,jdbcType=BIGINT},
+      product_name = #{productName,jdbcType=VARCHAR},
+      categories_id = #{categoriesId,jdbcType=BIGINT},
+      cost = #{cost,jdbcType=DECIMAL},
+      recommended_retail_price = #{recommendedRetailPrice,jdbcType=DECIMAL},
+      min_retail_price = #{minRetailPrice,jdbcType=DECIMAL},
+      stock = #{stock,jdbcType=BIGINT},
+      status = #{status,jdbcType=BIT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=BIGINT},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=BIGINT},
+      is_delete = #{isDelete,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

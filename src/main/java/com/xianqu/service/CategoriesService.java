@@ -39,7 +39,7 @@ public class CategoriesService {
 
     public int update(Categories categories) {
         Categories hasCategories = categoriesMapper.selectByName(categories.getCategoriesName(), categories.getUserId());
-        if(null != hasCategories) {
+        if(null != hasCategories && !hasCategories.getId().equals(categories.getId())) {
             throw new RuntimeException("分类名已存在");
         }
         return categoriesMapper.updateByPrimaryKeySelective(categories);

@@ -39,7 +39,7 @@ public class DistributorLevelService {
 
     public int update(DistributorLevel distributorLevel) {
         DistributorLevel hasDistributorLevel = distributorLevelMapper.selectByName(distributorLevel.getLevelName(), distributorLevel.getUserId());
-        if(null != hasDistributorLevel) {
+        if(null != hasDistributorLevel && !hasDistributorLevel.getId().equals(distributorLevel.getId())) {
             throw new RuntimeException("等级名已存在");
         }
         return distributorLevelMapper.updateByPrimaryKeySelective(distributorLevel);
