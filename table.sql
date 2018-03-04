@@ -117,15 +117,42 @@ CREATE TABLE `t_order` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `product_id` bigint(20) COMMENT '商品ID',
   `content` VARCHAR(200) COMMENT '订单内容',
-  `content` bigint(20) COMMENT '收件人',
-  `content` VARCHAR(20) COMMENT '收货电话',
-  `content` VARCHAR(200) COMMENT '收件地址',
+  `recipients` bigint(20) COMMENT '收件人',
+  `recipients_phone` VARCHAR(20) COMMENT '收货电话',
+  `recipients_address` VARCHAR(200) COMMENT '收件地址',
+  `payment` DECIMAL(10,2) COMMENT '支付金额',
+  `pay_type` VARCHAR(20) COMMENT '支付方式',
+  `status` VARCHAR(20) COMMENT '状态',
+  `create_date` datetime COMMENT '创建时间',
+  `create_user` bigint(20) COMMENT '创建用户',
+  `update_date` datetime COMMENT '更新时间',
+  `update_user` bigint(20) COMMENT '更新用户',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表';
+
+CREATE TABLE `t_order_supplier` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `order_id` bigint(20) NOT NULL COMMENT '订单ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
   `create_date` datetime COMMENT '创建时间',
   `create_user` bigint(20) COMMENT '创建用户',
   `update_date` datetime COMMENT '更新时间',
   `update_user` bigint(20) COMMENT '更新用户',
   PRIMARY KEY (`id`),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表';
+  foreign key(`order_id`) references t_order(`id`),
+  foreign key(`user_id`) references t_user(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='供应商表';
+
+CREATE TABLE `t_order_express` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `order_id` bigint(20) NOT NULL COMMENT '订单ID',
+  `company` VARCHAR(100) NOT NULL COMMENT '快递公司',
+  `express_order` VARCHAR(100) NOT NULL COMMENT '快递单号',
+  `create_date` datetime COMMENT '创建时间',
+  `create_user` bigint(20) COMMENT '创建用户',
+  PRIMARY KEY (`id`),
+  foreign key(`order_id`) references t_order(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单快递信息表';
 
 
 

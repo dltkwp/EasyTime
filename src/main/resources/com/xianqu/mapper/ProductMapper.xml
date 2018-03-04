@@ -31,7 +31,7 @@
     select
     <include refid="Base_Column_List" />
     from t_product
-    where create_user = #{userId,jdbcType=BIGINT} and product_name = #{productName, jdbcType=VARCHAR} AND is_delete = 0
+    where create_user = #{userId,jdbcType=BIGINT} and product_name like LIKE CONCAT('%',#{productName, jdbcType=VARCHAR},'%')  AND is_delete = 0
   </select>
   <select id="selectByUserId" resultMap="BaseResultMap">
     select
@@ -54,6 +54,9 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.xianqu.bean.Product">
+    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into t_product (id, product_no, product_name, 
       categories_id, cost, recommended_retail_price, 
       min_retail_price, stock, status, 
