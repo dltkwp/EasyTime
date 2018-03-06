@@ -9,7 +9,7 @@ public interface UserMapper {
 
     int insert(User record);
 
-    int insertSelective(User record);
+    Long insertSelective(User record);
 
     User selectByPrimaryKey(Long id);
 

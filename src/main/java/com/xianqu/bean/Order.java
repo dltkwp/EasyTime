@@ -10,7 +10,7 @@ public class Order {
 
     private String content;
 
-    private Long recipients;
+    private String recipients;
 
     private String recipientsPhone;
 
@@ -54,11 +54,11 @@ public class Order {
         this.content = content == null ? null : content.trim();
     }
 
-    public Long getRecipients() {
+    public String getRecipients() {
         return recipients;
     }
 
-    public void setRecipients(Long recipients) {
+    public void setRecipients(String recipients) {
         this.recipients = recipients;
     }
 

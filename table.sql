@@ -27,6 +27,14 @@ CREATE TABLE `t_user_role` (
   foreign key(`rid`) references t_role(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户角色表';
 
+CREATE TABLE `t_relationship` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `uid` bigint(20) NOT NULL COMMENT '代理商ID',
+  `pid` bigint(20) NOT NULL COMMENT '经销商ID',
+  PRIMARY KEY (`id`),
+  foreign key(`uid`) references t_user(`id`),
+  foreign key(`pid`) references t_user(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户关系表';
 
 CREATE TABLE `t_categories` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
@@ -117,7 +125,7 @@ CREATE TABLE `t_order` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `product_id` bigint(20) COMMENT '商品ID',
   `content` VARCHAR(200) COMMENT '订单内容',
-  `recipients` bigint(20) COMMENT '收件人',
+  `recipients` VARCHAR(20) COMMENT '收件人',
   `recipients_phone` VARCHAR(20) COMMENT '收货电话',
   `recipients_address` VARCHAR(200) COMMENT '收件地址',
   `payment` DECIMAL(10,2) COMMENT '支付金额',

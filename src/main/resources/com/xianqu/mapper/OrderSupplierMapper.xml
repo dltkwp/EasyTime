@@ -30,8 +30,8 @@
     )
     VALUES
     <foreach collection="supplierList" item="supplier" separator=",">
-      (#{supplier.id,jdbcType=BIGINT}, #{supplier.order_id,jdbcType=BIGINT}, #{supplier.user_id,jdbcType=BIGINT},
-      #{image.create_date,jdbcType=INTEGER}, #{image.create_user,jdbcType=TIMESTAMP}, #{image.update_date,jdbcType=BIGINT}, #{image.update_user,jdbcType=BIGINT})
+      (#{supplier.id,jdbcType=BIGINT}, #{supplier.orderId,jdbcType=BIGINT}, #{supplier.userId,jdbcType=BIGINT},
+      #{supplier.createDate,jdbcType=INTEGER}, #{supplier.createUser,jdbcType=TIMESTAMP}, #{supplier.updateDate,jdbcType=BIGINT}, #{supplier.updateUser,jdbcType=BIGINT})
     </foreach>
   </insert>
   <insert id="insert" parameterType="com.xianqu.bean.OrderSupplier">

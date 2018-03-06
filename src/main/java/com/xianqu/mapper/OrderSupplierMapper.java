@@ -1,6 +1,7 @@
 package com.xianqu.mapper;
 
 import com.xianqu.bean.OrderSupplier;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,11 +18,9 @@ public interface OrderSupplierMapper {
 
     int updateByPrimaryKey(OrderSupplier record);
 
-    int insertAll(List<OrderSupplier> suppliers);
-
     List<OrderSupplier> selectByOrderId(Long orderId);
 
-    void insertByList(List<OrderSupplier> suppliers);
+    void insertByList(@Param("supplierList") List<OrderSupplier> supplierList);
 
     void deleteByOrderId(Long id);
 }

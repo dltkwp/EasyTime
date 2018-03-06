@@ -1,7 +1,9 @@
 package com.xianqu.service;
 
 import com.xianqu.bean.User;
+import com.xianqu.bean.UserRole;
 import com.xianqu.mapper.UserMapper;
+import com.xianqu.mapper.UserRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,9 @@ import java.util.List;
 public class UserService {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserRoleMapper userRoleMapper;
 
     public List<User> getAll(){
         return userMapper.selectAll();
@@ -32,10 +37,12 @@ public class UserService {
         user.setCreateDate(date);
         user.setUpdateDate(date);
         user.setIsDelete(false);
-        int result = userMapper.insertSelective(user);
-        if(result == 0) {
-            throw new Exception("创建账户失败！");
-        }
+        Long userId = userMapper.insertSelective(user);
+
+        UserRole userRole = new UserRole();
+        userRole.setUid(userId);
+        userRole.setRid(2L);
+        userRoleMapper.insert(userRole);
     }
 
     public User findByUsername(String username) {

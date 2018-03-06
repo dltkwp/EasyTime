@@ -13,7 +13,7 @@ public class OrderVo {
 
     private String content;
 
-    private Long recipients;
+    private String recipients;
 
     private String recipientsPhone;
 
@@ -59,11 +59,11 @@ public class OrderVo {
         this.content = content;
     }
 
-    public Long getRecipients() {
+    public String getRecipients() {
         return recipients;
     }
 
-    public void setRecipients(Long recipients) {
+    public void setRecipients(String recipients) {
         this.recipients = recipients;
     }
 

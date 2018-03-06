@@ -8,11 +8,6 @@
   <sql id="Base_Column_List">
     id, role_name
   </sql>
-  <select id="findRoleByUserId" parameterType="java.lang.Long" resultType="java.lang.String">
-    select b.role_name
-    from t_user_role a JOIN t_role b on a.uid = b.id
-    where a.uid = #{userId,jdbcType=BIGINT}
-  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

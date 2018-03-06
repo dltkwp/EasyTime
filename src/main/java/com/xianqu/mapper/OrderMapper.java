@@ -20,5 +20,5 @@ public interface OrderMapper {
 
     int updateByPrimaryKey(Order record);
 
-    List<OrderVo> selectByUserId(@Param("userId") Long userId, @Param("content") String content,@Param("st")  Date st,@Param("et")  Date et,@Param("payType")  String payType,@Param("status") String status,@Param("recipients") String recipients,@Param("distributor") String distributor);
+    List<OrderVo> selectByUserId(@Param("userId") Long userId, @Param("st")  Date st,@Param("et")  Date et,@Param("payType")  String payType, @Param("content") String content, @Param("status") String status,@Param("recipients") String recipients,@Param("distributor") String distributor,@Param("isSupplier") Boolean isSupplier);
 }
