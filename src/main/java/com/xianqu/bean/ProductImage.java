@@ -9,7 +9,7 @@ public class ProductImage {
 
     private String imageCode;
 
-    private Integer order;
+    private Integer orderNumber;
 
     private Date createDate;
 
@@ -39,12 +39,12 @@ public class ProductImage {
         this.imageCode = imageCode == null ? null : imageCode.trim();
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getOrderNumber() {
+        return orderNumber;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
     public Date getCreateDate() {

@@ -114,7 +114,7 @@ CREATE TABLE `t_product_image` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `product_id` bigint(20) NOT NULL COMMENT '商品ID',
   `image_code` VARCHAR(20) COMMENT '图片地址',
-  `order` int(10) COMMENT '顺序',
+  `order_number` int(10) COMMENT '顺序',
   `create_date` datetime COMMENT '创建时间',
   `create_user` bigint(20) COMMENT '创建用户',
   PRIMARY KEY (`id`),

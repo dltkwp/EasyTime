@@ -25,19 +25,19 @@
     select 
     <include refid="Base_Column_List" />
     from t_product
-    where id = #{id,jdbcType=BIGINT} AND is_delete = 0
+    where id = #{id,jdbcType=BIGINT} AND is_delete = false
   </select>
-  <select id="selectByName" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByName" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_product
-    where create_user = #{userId,jdbcType=BIGINT} and product_name like LIKE CONCAT('%',#{productName, jdbcType=VARCHAR},'%')  AND is_delete = 0
+    where create_user = #{userId,jdbcType=BIGINT} and product_name = #{productName, jdbcType=VARCHAR} AND is_delete = false
   </select>
   <select id="selectByUserId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_product
-    where create_user = #{userId,jdbcType=BIGINT} AND is_delete = 0
+    where create_user = #{userId,jdbcType=BIGINT} AND is_delete = false
     <if test="productName != null and productName != ''">
       AND product_name = #{productName,jdbcType=VARCHAR}
     </if>
@@ -53,10 +53,7 @@
     delete from t_product
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.xianqu.bean.Product">
-    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insert" parameterType="com.xianqu.bean.Product" useGeneratedKeys="true" keyProperty="id" >
     insert into t_product (id, product_no, product_name, 
       categories_id, cost, recommended_retail_price, 
       min_retail_price, stock, status, 

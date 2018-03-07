@@ -5,12 +5,12 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="product_id" jdbcType="BIGINT" property="productId" />
     <result column="image_code" jdbcType="VARCHAR" property="imageCode" />
-    <result column="order" jdbcType="INTEGER" property="order" />
+    <result column="order_number" jdbcType="INTEGER" property="orderNumber" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="create_user" jdbcType="BIGINT" property="createUser" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, product_id, image_code, order, create_date, create_user
+    id, product_id, image_code, order_number, create_date, create_user
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -34,20 +34,20 @@
   </delete>
   <insert id="insert" parameterType="com.xianqu.bean.ProductImage">
     insert into t_product_image (id, product_id, image_code, 
-      order, create_date, create_user
+      order_number, create_date, create_user
       )
     values (#{id,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{imageCode,jdbcType=VARCHAR}, 
-      #{order,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT}
+      #{orderNumber,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT}
       )
   </insert>
   <insert id="insertByList">
     INSERT INTO t_product_image (id, product_id, image_code,
-    order, create_date, create_user
+    order_number, create_date, create_user
     )
     VALUES
     <foreach collection="imageList" item="image" separator=",">
       (#{image.id,jdbcType=BIGINT}, #{image.productId,jdbcType=BIGINT}, #{image.imageCode,jdbcType=VARCHAR},
-      #{image.order,jdbcType=INTEGER}, #{image.createDate,jdbcType=TIMESTAMP}, #{image.createUser,jdbcType=BIGINT})
+      #{image.orderNumber,jdbcType=INTEGER}, #{image.createDate,jdbcType=TIMESTAMP}, #{image.createUser,jdbcType=BIGINT})
     </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.xianqu.bean.ProductImage">
@@ -62,8 +62,8 @@
       <if test="imageCode != null">
         image_code,
       </if>
-      <if test="order != null">
-        order,
+      <if test="orderNumber != null">
+        order_number,
       </if>
       <if test="createDate != null">
         create_date,
@@ -82,8 +82,8 @@
       <if test="imageCode != null">
         #{imageCode,jdbcType=VARCHAR},
       </if>
-      <if test="order != null">
-        #{order,jdbcType=INTEGER},
+      <if test="orderNumber != null">
+        #{orderNumber,jdbcType=INTEGER},
       </if>
       <if test="createDate != null">
         #{createDate,jdbcType=TIMESTAMP},
@@ -102,8 +102,8 @@
       <if test="imageCode != null">
         image_code = #{imageCode,jdbcType=VARCHAR},
       </if>
-      <if test="order != null">
-        order = #{order,jdbcType=INTEGER},
+      <if test="orderNumber != null">
+        order_number = #{orderNumber,jdbcType=INTEGER},
       </if>
       <if test="createDate != null">
         create_date = #{createDate,jdbcType=TIMESTAMP},
@@ -118,7 +118,7 @@
     update t_product_image
     set product_id = #{productId,jdbcType=BIGINT},
       image_code = #{imageCode,jdbcType=VARCHAR},
-      order = #{order,jdbcType=INTEGER},
+      order_number = #{orderNumber,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       create_user = #{createUser,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}

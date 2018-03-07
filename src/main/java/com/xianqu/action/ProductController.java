@@ -1,5 +1,6 @@
 package com.xianqu.action;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xianqu.bean.Categories;
 import com.xianqu.bean.Product;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -33,7 +36,9 @@ public class ProductController {
     @RequestMapping(value="/products", method = RequestMethod.GET)
     public PageInfo list(@NotNull @RequestParam("pageNum") Integer pageNum,@NotNull @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "productName", defaultValue = "") String productName, @RequestParam(value = "categoriesId", required = false) Long categoriesId, @RequestParam(value = "status", required = false) Boolean status) throws Exception {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
-        PageInfo page = productService.getListByUserId(userSession.getId(), pageNum, pageSize, productName, categoriesId, status);
+        PageHelper.startPage(pageNum, pageSize);
+        List<Product> list = productService.getListByUserId(userSession.getId(), productName, categoriesId, status);
+        PageInfo page = new PageInfo(list);
         return page;
     }
 
@@ -44,10 +49,12 @@ public class ProductController {
         @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header"),
     })
 
-    public Result add(@RequestBody ProductVo productVo) throws Exception {
+    public Map<String, Object> add(@RequestBody ProductVo productVo) throws Exception {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
-        productService.insert(productVo, userSession.getId());
-        return ResultUtil.success();
+        Long productId = productService.insert(productVo, userSession.getId());
+        Map<String, Object> map = new HashMap<>();
+        map.put("productId", productId);
+        return map;
     }
 
     @ApiOperation(value="商品详情", notes="商品详情")

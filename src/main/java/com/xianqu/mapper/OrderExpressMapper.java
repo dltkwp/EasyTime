@@ -14,4 +14,6 @@ public interface OrderExpressMapper {
     int updateByPrimaryKeySelective(OrderExpress record);
 
     int updateByPrimaryKey(OrderExpress record);
+
+    OrderExpress selectByOrderId(Long orderId);
 }

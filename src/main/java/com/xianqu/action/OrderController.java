@@ -1,7 +1,9 @@
 package com.xianqu.action;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xianqu.bean.Order;
+import com.xianqu.bean.OrderExpress;
 import com.xianqu.bean.Result;
 import com.xianqu.bean.User;
 import com.xianqu.bean.order.OrderVo;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -35,7 +38,9 @@ public class OrderController {
                          @RequestParam(value = "content", required = false) String content, @RequestParam(value = "recipients", required = false) String recipients,
                          @RequestParam(value = "distributor", required = false) String distributor,@NotNull @RequestParam(value = "isSupplier") Boolean isSupplier) throws Exception {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
-        PageInfo page = orderService.getListByUserId(userSession.getId(), pageNum, pageSize, st, et, payType, status, content, recipients, distributor, isSupplier);
+        PageHelper.startPage(pageNum, pageSize);
+        List<OrderVo> list = orderService.getListByUserId(userSession.getId(), st, et, payType, status, content, recipients, distributor, isSupplier);
+        PageInfo page = new PageInfo(list);
         return page;
     }
 
@@ -73,9 +78,25 @@ public class OrderController {
 
     @ApiOperation(value="发货", notes="发货")
     @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
-    @RequestMapping(value="/delivery", method = RequestMethod.GET)
+    @RequestMapping(value="/delivery", method = RequestMethod.POST)
     public void delivery(@NotNull @RequestParam(value = "orderId") Long orderId, @NotNull @RequestParam(value = "company") String company, @NotNull @RequestParam(value = "expressOrder") String expressOrder) throws Exception {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
         orderService.delivery(userSession.getId(), orderId, company, expressOrder);
+    }
+
+    @ApiOperation(value="取得发货信息", notes="取得发货信息")
+    @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
+    @RequestMapping(value="/delivery", method = RequestMethod.GET)
+    public OrderExpress deliveryInfo(@NotNull @RequestParam(value = "orderId") Long orderId) throws Exception {
+        OrderExpress orderExpress = orderService.deliveryInfo(orderId);
+        return orderExpress;
+    }
+
+    @ApiOperation(value="发货", notes="发货")
+    @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
+    @RequestMapping(value="/delivery", method = RequestMethod.PUT)
+    public void deliveryUpdate(@NotNull @RequestParam(value = "id") Long id, @NotNull @RequestParam(value = "orderId") Long orderId, @NotNull @RequestParam(value = "company") String company, @NotNull @RequestParam(value = "expressOrder") String expressOrder) throws Exception {
+        User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
+        orderService.updateDelivery(userSession.getId(), id, orderId, company, expressOrder);
     }
 }

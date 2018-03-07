@@ -82,10 +82,7 @@
       #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}, 
       #{updateUser,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.xianqu.bean.Order">
-    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="com.xianqu.bean.Order" useGeneratedKeys="true" keyProperty="id">
     insert into t_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

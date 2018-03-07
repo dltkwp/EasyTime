@@ -36,7 +36,8 @@ public class OrderService {
         orderVo.setCreateDate(now);
         orderVo.setUpdateDate(now);
         BeanUtils.copyProperties(orderVo, orderDto);
-        Long orderId = orderMapper.insert(orderDto);
+        orderMapper.insert(orderDto);
+        Long orderId = orderDto.getId();
         List<OrderSupplier> suppliers = orderVo.getOrderSupplierList();
         if (null != suppliers && suppliers.size() != 0) {
             for(OrderSupplier supplier: suppliers) {
@@ -52,11 +53,9 @@ public class OrderService {
         return orderId;
     }
 
-    public PageInfo getListByUserId(Long userId, Integer pageNumber, Integer pageSize, Date st, Date et, String payType, String status, String content, String recipients, String distributor, Boolean isSupplier) {
-        PageHelper.startPage(pageNumber, pageSize);
+    public List<OrderVo> getListByUserId(Long userId, Date st, Date et, String payType, String status, String content, String recipients, String distributor, Boolean isSupplier) {
         List<OrderVo> list = orderMapper.selectByUserId(userId, st, et,payType, status, content, recipients, distributor, isSupplier);
-        PageInfo page = new PageInfo(list);
-        return page;
+        return list;
     }
 
     public OrderVo selectByPrimaryKey(Long orderId) {
@@ -105,5 +104,21 @@ public class OrderService {
         orderExpress.setCreateUser(userId);
         orderExpress.setCreateDate(now);
         orderExpressMapper.insert(orderExpress);
+    }
+
+    public OrderExpress deliveryInfo(Long orderId) {
+        return orderExpressMapper.selectByOrderId(orderId);
+    }
+
+    public void updateDelivery(Long userId, Long id, Long orderId, String company, String expressOrder) {
+        Date now = new Date();
+        OrderExpress orderExpress = new OrderExpress();
+        orderExpress.setId(id);
+        orderExpress.setOrderId(orderId);
+        orderExpress.setCompany(company);
+        orderExpress.setExpressOrder(expressOrder);
+        orderExpress.setCreateUser(userId);
+        orderExpress.setCreateDate(now);
+        orderExpressMapper.updateByPrimaryKeySelective(orderExpress);
     }
 }

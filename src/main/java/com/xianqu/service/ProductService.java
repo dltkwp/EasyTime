@@ -47,13 +47,14 @@ public class ProductService {
         }
         Product productDto = new Product();
         Date now = new Date();
-        productDto.setCreateUser(userId);
-        productDto.setUpdateUser(userId);
-        productDto.setCreateDate(now);
-        productDto.setUpdateDate(now);
-        productDto.setIsDelete(false);
+        productVo.setCreateUser(userId);
+        productVo.setUpdateUser(userId);
+        productVo.setCreateDate(now);
+        productVo.setUpdateDate(now);
+        productVo.setIsDelete(false);
         BeanUtils.copyProperties(productVo, productDto);
-        Long productId = productMapper.insert(productDto);
+        productMapper.insert(productDto);
+        Long productId = productDto.getId();
         if (!StringUtils.isEmpty(productVo.getDescription())) {
             ProductDescription description = new ProductDescription();
             description.setProductId(productId);
@@ -67,15 +68,14 @@ public class ProductService {
         }
 
         List<String> images = productVo.getImages();
-        int imagesSize = images.size();
-        if(null != images && imagesSize > 0) {
+        if(null != images && images.size() > 0) {
             List<ProductImage> imageList = new ArrayList<ProductImage>();
-            for(int i = 0; i < imagesSize; i++) {
+            for(int i = 0; i < images.size(); i++) {
                 ProductImage productImage = new ProductImage();
                 productImage.setCreateDate(now);
                 productImage.setCreateUser(userId);
                 productImage.setProductId(productId);
-                productImage.setOrder(i);
+                productImage.setOrderNumber(i);
                 productImage.setImageCode(images.get(i));
                 imageList.add(productImage);
             }
@@ -98,11 +98,9 @@ public class ProductService {
         return productId;
     }
 
-    public PageInfo getListByUserId(Long userId, Integer pageNumber, Integer pageSize, String productName, Long categoriesId, Boolean status) {
-        PageHelper.startPage(pageNumber, pageSize);
+    public List<Product> getListByUserId(Long userId, String productName, Long categoriesId, Boolean status) {
         List<Product> list = productMapper.selectByUserId(userId, productName, categoriesId, status);
-        PageInfo page = new PageInfo(list);
-        return page;
+        return list;
     }
 
     public ProductVo selectByPrimaryKey(Long productId) {
@@ -110,15 +108,19 @@ public class ProductService {
         Product product = productMapper.selectByPrimaryKey(productId);
         BeanUtils.copyProperties(product, productVo);
         ProductDescription description = productDescriptionMapper.selectByProductId(productId);
-        productVo.setDescription(description.getDescription());
-
+        if(description != null) {
+            productVo.setDescription(description.getDescription());
+        }
         List<ProductImage> productImages = productImageMapper.selectByProductId(productId);
-        List<String> images = productImages.stream().map(ProductImage::getImageCode).collect(Collectors.toList());
-        productVo.setImages(images);
+        if(productImages != null) {
+            List<String> images = productImages.stream().map(ProductImage::getImageCode).collect(Collectors.toList());
+            productVo.setImages(images);
+        }
 
         List<ProductPrice> productPrices = productPriceMapper.selectByProductId(productId);
-        productVo.setPrices(productPrices);
-
+        if(productPrices != null) {
+            productVo.setPrices(productPrices);
+        }
         return productVo;
     }
 
@@ -153,15 +155,14 @@ public class ProductService {
         productImageMapper.deleteByProductId(productDto.getId());
 
         List<String> images = productVo.getImages();
-        int imagesSize = images.size();
-        if(null != images && imagesSize > 0) {
+        if(null != images && images.size() > 0) {
             List<ProductImage> imageList = new ArrayList<ProductImage>();
-            for(int i = 0; i < imagesSize; i++) {
+            for(int i = 0; i < images.size(); i++) {
                 ProductImage productImage = new ProductImage();
                 productImage.setCreateDate(now);
                 productImage.setCreateUser(userId);
                 productImage.setProductId(productDto.getId());
-                productImage.setOrder(i);
+                productImage.setOrderNumber(i);
                 productImage.setImageCode(images.get(i));
                 imageList.add(productImage);
             }
