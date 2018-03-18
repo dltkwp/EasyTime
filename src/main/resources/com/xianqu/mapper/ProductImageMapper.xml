@@ -23,6 +23,7 @@
     <include refid="Base_Column_List" />
     from t_product_image
     where product_id = #{productId,jdbcType=BIGINT}
+    order by create_date DESC
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_product_image

@@ -34,10 +34,10 @@ public class ProductController {
     @ApiOperation(value="商品列表", notes="获取商品列表")
     @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
     @RequestMapping(value="/products", method = RequestMethod.GET)
-    public PageInfo list(@NotNull @RequestParam("pageNum") Integer pageNum,@NotNull @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "productName", defaultValue = "") String productName, @RequestParam(value = "categoriesId", required = false) Long categoriesId, @RequestParam(value = "status", required = false) Boolean status) throws Exception {
+    public PageInfo list(@NotNull @RequestParam("pageNum") Integer pageNum,@NotNull @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "queryKey", defaultValue = "") String queryKey, @RequestParam(value = "categoriesId", required = false) Long categoriesId) throws Exception {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
         PageHelper.startPage(pageNum, pageSize);
-        List<Product> list = productService.getListByUserId(userSession.getId(), productName, categoriesId, status);
+        List<Product> list = productService.getListByUserId(userSession.getId(), queryKey, categoriesId);
         PageInfo page = new PageInfo(list);
         return page;
     }

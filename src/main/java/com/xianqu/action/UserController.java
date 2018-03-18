@@ -1,8 +1,11 @@
 package com.xianqu.action;
 
-import com.xianqu.bean.PasswordVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.xianqu.bean.Agent;
 import com.xianqu.bean.Result;
 import com.xianqu.bean.User;
+import com.xianqu.bean.user.UserVo;
 import com.xianqu.service.UserService;
 import com.xianqu.util.ResultUtil;
 import io.swagger.annotations.Api;
@@ -15,7 +18,10 @@ import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -64,5 +70,28 @@ public class UserController {
         user.setId(userSession.getId());
         userService.updateByPrimaryKeySelective(user);
         return ResultUtil.success();
+    }
+
+    @ApiOperation(value="添加分销商", notes="添加分销商")
+    @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
+    @RequestMapping(value="/user/dealer", method = RequestMethod.POST)
+    public Result addDealer(@RequestBody UserVo userVo) throws Exception {
+        User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
+        Long pid = userSession.getId();
+        String password= new SimpleHash("MD5",userVo.getPassword(), ByteSource.Util.bytes(userVo.getUsername() + SALT),2).toHex();
+        userVo.setPassword(password);
+        userService.addDealer(userVo, pid);
+        return ResultUtil.success();
+    }
+
+    @ApiOperation(value="查看分销商", notes="查看分销商")
+    @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
+    @RequestMapping(value="/user/dealer", method = RequestMethod.GET)
+    public PageInfo getAgent(@NotNull @RequestParam("pageNum") Integer pageNum, @NotNull @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "queryKey",  required = false) String queryKey, @RequestParam(value = "levelId", required = false) Long levelId) throws Exception {
+        User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
+        PageHelper.startPage(pageNum, pageSize);
+        List<Agent> userList = userService.getUserByPid(userSession.getId(), queryKey, levelId);
+        PageInfo page = new PageInfo(userList);
+        return page;
     }
 }

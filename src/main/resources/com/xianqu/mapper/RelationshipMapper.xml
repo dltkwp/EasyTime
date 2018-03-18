@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xianqu.mapper.RelationshipMapper">
+  <resultMap id="BaseResultMap" type="com.xianqu.bean.Relationship">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="pid" jdbcType="BIGINT" property="pid" />
+    <result column="distributor_level_id" jdbcType="BIGINT" property="distributorLevelId" />
+  </resultMap>
+  <resultMap id="UserResultMap" type="com.xianqu.bean.Agent">
+    <id column="id" jdbcType="BIGINT" property="id"></id>
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="wechart" jdbcType="VARCHAR" property="wechart" />
+    <result column="alipay" jdbcType="VARCHAR" property="alipay" />
+    <result column="level_name" jdbcType="VARCHAR" property="levelName"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, uid, pid, distributor_level_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_relationship
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getUserByPid" resultMap="UserResultMap">
+    select r.id, u.username, u.realname, u.phone, u.wechart, u.alipay, l.level_name
+    from t_relationship r join t_user u on r.uid = u.id AND r.pid = #{pid,jdbcType=BIGINT} left join t_distributor_level l on r.distributor_level_id = l.id
+    <where>
+      <if test="queryKey != null and queryKey != ''">
+        (u.username like CONCAT('%',#{queryKey, jdbcType=VARCHAR},'%') OR u.phone like CONCAT('%',#{queryKey, jdbcType=VARCHAR},'%'))
+      </if>
+      <if test="levelId != null">
+        l.id = #{levelId, jdbcType=BIGINT}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_relationship
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.xianqu.bean.Relationship">
+    insert into t_relationship (id, uid, pid, distributor_level_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{uid,jdbcType=BIGINT}, #{pid,jdbcType=BIGINT}, #{distributorLevelId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xianqu.bean.Relationship">
+    insert into t_relationship
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="distributorLevelId != null">
+        distributor_level_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="distributorLevelId != null">
+        #{distributorLevelId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xianqu.bean.Relationship">
+    update t_relationship
+    <set>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="distributorLevelId != null">
+        distributor_level_id = #{distributorLevelId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xianqu.bean.Relationship">
+    update t_relationship
+    set uid = #{uid,jdbcType=BIGINT},
+      pid = #{pid,jdbcType=BIGINT},
+      distributor_level_id = #{distributorLevelId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

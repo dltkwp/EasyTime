@@ -38,14 +38,11 @@
     <include refid="Base_Column_List" />
     from t_product
     where create_user = #{userId,jdbcType=BIGINT} AND is_delete = false
-    <if test="productName != null and productName != ''">
-      AND product_name = #{productName,jdbcType=VARCHAR}
+    <if test="queryKey != null and queryKey != ''">
+      AND (product_name like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%') OR product_no like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%'))
     </if>
     <if test="categoriesId != null and categoriesId != ''">
       AND categories_id = #{categoriesId,jdbcType=BIGINT}
-    </if>
-    <if test="status != null">
-      AND status = #{status,jdbcType=BIT}
     </if>
     ORDER BY update_date DESC
   </select>

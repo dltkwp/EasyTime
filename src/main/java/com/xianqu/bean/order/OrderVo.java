@@ -21,8 +21,14 @@ public class OrderVo {
 
     private BigDecimal payment;
 
+    /**
+     *  none-未支付 alipay-支付宝 wechart-微信
+     */
     private String payType;
 
+    /**
+     *  REVIEW-待审核 WAIT-等待发货 DELIVERY-已发货 RECEIVED-已签收
+     */
     private String status;
 
     private Date createDate;

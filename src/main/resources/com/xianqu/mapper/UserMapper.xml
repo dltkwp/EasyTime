@@ -4,7 +4,6 @@
   <resultMap id="BaseResultMap" type="com.xianqu.bean.User">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="username" jdbcType="VARCHAR" property="username" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="realname" jdbcType="VARCHAR" property="realname" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="wechart" jdbcType="VARCHAR" property="wechart" />
@@ -38,10 +37,8 @@
     delete from t_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.xianqu.bean.User">
-    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insert" parameterType="com.xianqu.bean.User" useGeneratedKeys="true" keyProperty="id">
+
     insert into t_user (id, username, password, 
       realname, phone, wechart, 
       alipay, create_date, update_date, 
@@ -51,10 +48,7 @@
       #{alipay,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
       #{isDelete,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="com.xianqu.bean.User">
-    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="com.xianqu.bean.User" useGeneratedKeys="true" keyProperty="id">
     insert into t_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

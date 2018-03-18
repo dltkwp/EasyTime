@@ -1,5 +1,6 @@
 package com.xianqu.mapper;
 
+import com.xianqu.bean.Role;
 import com.xianqu.bean.UserRole;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface UserRoleMapper {
     int updateByPrimaryKey(UserRole record);
 
     List<String> findRoleByUserId(Long userId);
+
+    List<Role> getRoleByUserName(String username);
 }

@@ -29,11 +29,13 @@ CREATE TABLE `t_user_role` (
 
 CREATE TABLE `t_relationship` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `uid` bigint(20) NOT NULL COMMENT '代理商ID',
+  `uid` bigint(20) NOT NULL COMMENT '分销商ID',
   `pid` bigint(20) NOT NULL COMMENT '经销商ID',
+  `distributor_level_id` bigint(20) NOT NULL COMMENT '分销等级ID',
   PRIMARY KEY (`id`),
   foreign key(`uid`) references t_user(`id`),
-  foreign key(`pid`) references t_user(`id`)
+  foreign key(`pid`) references t_user(`id`),
+  foreign key(`distributor_level_id`) references t_distributor_level(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户关系表';
 
 CREATE TABLE `t_categories` (
@@ -46,6 +48,7 @@ CREATE TABLE `t_categories` (
 
 insert into t_role(role_name) values('dealer');
 insert into t_role(role_name) values('agent');
+insert into t_role(role_name) values('normal');
 
 insert into t_user_role(uid, rid) values(1, 1);
 insert into t_user_role(uid, rid) values(1, 2);
@@ -59,7 +62,7 @@ CREATE TABLE `t_distributor_level` (
   `level_name` varchar(20) NOT NULL COMMENT '分销等级',
   `discount` bigint(3) NOT NULL COMMENT '默认折扣',
   `initial_fee` DECIMAL(10,2) COMMENT '加盟费',
-  `user_id` bigint(20) NOT NULL COMMENT '用户名称',
+  `user_id` bigint(20) NOT NULL COMMENT '用户id',
   PRIMARY KEY (`id`),
   foreign key(`user_id`) references t_user(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分销等级';
@@ -69,7 +72,7 @@ CREATE TABLE `t_product` (
   `product_no` bigint(20) COMMENT '商品编号',
   `product_name` varchar(20) NOT NULL COMMENT '商品名称',
   `categories_id` bigint(20) COMMENT '分类ID',
-  `cost` DECIMAL(5, 2) COMMENT '成本',
+  `cost` DECIMAL(10, 2) COMMENT '成本',
   `recommended_retail_price` DECIMAL(10,2) COMMENT '建议售价',
   `min_retail_price` DECIMAL(10,2) COMMENT '最低售价',
   `stock` bigint(10) COMMENT '库存',
@@ -101,6 +104,8 @@ CREATE TABLE `t_product_price` (
   `product_id` bigint(20) NOT NULL COMMENT '商品ID',
   `distributor_level_id` bigint(20) COMMENT '分销等级',
   `price` DECIMAL(10,2) COMMENT '分销价格',
+  `allow` bit(1) DEFAULT b'0' COMMENT '允许分销',
+  `discount` bigint(3) COMMENT '默认折扣',
   `create_date` datetime COMMENT '创建时间',
   `create_user` bigint(20) COMMENT '创建用户',
   `update_date` datetime COMMENT '更新时间',

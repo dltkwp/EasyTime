@@ -35,11 +35,11 @@ public class OrderController {
     public PageInfo list(@NotNull @RequestParam("pageNum") Integer pageNum, @NotNull @RequestParam("pageSize") Integer pageSize,
                          @RequestParam(value = "st", required = false) Date st, @RequestParam(value = "et", required = false) Date et,
                          @RequestParam(value = "payType", required = false) String payType, @RequestParam(value = "status", required = false) String status,
-                         @RequestParam(value = "content", required = false) String content, @RequestParam(value = "recipients", required = false) String recipients,
-                         @RequestParam(value = "distributor", required = false) String distributor,@NotNull @RequestParam(value = "isSupplier") Boolean isSupplier) throws Exception {
+                         @RequestParam(value = "queryKey", required = false) String queryKey, @RequestParam(value = "distributor", required = false) String distributor,
+                         @RequestParam(value = "agents", required = false) String agents, @NotNull @RequestParam(value = "isSupplier") Boolean isSupplier) throws Exception {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
         PageHelper.startPage(pageNum, pageSize);
-        List<OrderVo> list = orderService.getListByUserId(userSession.getId(), st, et, payType, status, content, recipients, distributor, isSupplier);
+        List<OrderVo> list = orderService.getListByUserId(userSession.getId(), st, et, payType, status, queryKey, distributor, agents, isSupplier);
         PageInfo page = new PageInfo(list);
         return page;
     }
@@ -51,7 +51,7 @@ public class OrderController {
     })
     public Result add(@RequestBody OrderVo orderVo) throws Exception {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
-        orderVo.setStatus("WAIT");
+        orderVo.setStatus("REVIEW");
         orderService.insert(orderVo, userSession.getId());
         return ResultUtil.success();
     }
@@ -79,9 +79,10 @@ public class OrderController {
     @ApiOperation(value="发货", notes="发货")
     @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
     @RequestMapping(value="/delivery", method = RequestMethod.POST)
-    public void delivery(@NotNull @RequestParam(value = "orderId") Long orderId, @NotNull @RequestParam(value = "company") String company, @NotNull @RequestParam(value = "expressOrder") String expressOrder) throws Exception {
+    public Result delivery(@NotNull @RequestParam(value = "orderId") Long orderId, @NotNull @RequestParam(value = "company") String company, @NotNull @RequestParam(value = "expressOrder") String expressOrder) throws Exception {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
         orderService.delivery(userSession.getId(), orderId, company, expressOrder);
+        return ResultUtil.success();
     }
 
     @ApiOperation(value="取得发货信息", notes="取得发货信息")
@@ -95,8 +96,9 @@ public class OrderController {
     @ApiOperation(value="发货", notes="发货")
     @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
     @RequestMapping(value="/delivery", method = RequestMethod.PUT)
-    public void deliveryUpdate(@NotNull @RequestParam(value = "id") Long id, @NotNull @RequestParam(value = "orderId") Long orderId, @NotNull @RequestParam(value = "company") String company, @NotNull @RequestParam(value = "expressOrder") String expressOrder) throws Exception {
+    public Result deliveryUpdate(@NotNull @RequestParam(value = "id") Long id, @NotNull @RequestParam(value = "orderId") Long orderId, @NotNull @RequestParam(value = "company") String company, @NotNull @RequestParam(value = "expressOrder") String expressOrder) throws Exception {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
         orderService.updateDelivery(userSession.getId(), id, orderId, company, expressOrder);
+        return ResultUtil.success();
     }
 }

@@ -8,6 +8,7 @@ import com.xianqu.mapper.ProductDescriptionMapper;
 import com.xianqu.mapper.ProductImageMapper;
 import com.xianqu.mapper.ProductMapper;
 import com.xianqu.mapper.ProductPriceMapper;
+import com.xianqu.util.Constant;
 import org.apache.ibatis.reflection.ArrayUtil;
 import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.BeanUtils;
@@ -98,8 +99,8 @@ public class ProductService {
         return productId;
     }
 
-    public List<Product> getListByUserId(Long userId, String productName, Long categoriesId, Boolean status) {
-        List<Product> list = productMapper.selectByUserId(userId, productName, categoriesId, status);
+    public List<Product> getListByUserId(Long userId, String queryKey, Long categoriesId) {
+        List<Product> list = productMapper.selectByUserId(userId, queryKey, categoriesId);
         return list;
     }
 
@@ -138,8 +139,8 @@ public class ProductService {
         }
         Product productDto = new Product();
         Date now = new Date();
-        productDto.setUpdateUser(userId);
-        productDto.setUpdateDate(now);
+        productVo.setUpdateUser(userId);
+        productVo.setUpdateDate(now);
         BeanUtils.copyProperties(productVo, productDto);
         productMapper.updateByPrimaryKeySelective(productDto);
 
@@ -152,10 +153,9 @@ public class ProductService {
             productDescriptionMapper.updateByPrimaryKeyWithBLOBs(description);
         }
 
-        productImageMapper.deleteByProductId(productDto.getId());
-
         List<String> images = productVo.getImages();
         if(null != images && images.size() > 0) {
+            productImageMapper.deleteByProductId(productDto.getId());
             List<ProductImage> imageList = new ArrayList<ProductImage>();
             for(int i = 0; i < images.size(); i++) {
                 ProductImage productImage = new ProductImage();
@@ -169,10 +169,9 @@ public class ProductService {
             productImageMapper.insertByList(imageList);
         }
 
-        productPriceMapper.deleteByProductId(productDto.getId());
-
         List<ProductPrice> prices = productVo.getPrices();
         if(null != prices && prices.size() > 0) {
+            productPriceMapper.deleteByProductId(productDto.getId());
             for(ProductPrice price: prices) {
                 price.setCreateDate(now);
                 price.setCreateUser(userId);

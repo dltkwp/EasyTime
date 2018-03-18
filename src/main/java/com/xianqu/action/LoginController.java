@@ -1,9 +1,8 @@
 package com.xianqu.action;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xianqu.bean.PasswordVo;
-import com.xianqu.bean.Result;
-import com.xianqu.bean.User;
+import com.xianqu.bean.*;
+import com.xianqu.service.RoleService;
 import com.xianqu.service.UserService;
 import com.xianqu.util.ResultUtil;
 import io.swagger.annotations.*;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,6 +28,9 @@ public class LoginController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RoleService roleService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value="登录", notes="根据用户名和密码登录")
@@ -43,6 +46,8 @@ public class LoginController {
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(userInfo.getUsername(), userInfo.getPassword());
         subject.login(token);
+        List<Role> list = roleService.getRoleByUserName(userInfo.getUsername());
+        jsonObject.put("roleList", list);
         jsonObject.put("token", subject.getSession().getId());
         jsonObject.put("code", 1000200);
         jsonObject.put("msg", "登录成功");

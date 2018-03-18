@@ -15,6 +15,7 @@
     from t_user_role
     where id = #{id,jdbcType=BIGINT}
   </select>
+
   <select id="findRoleByUserId" parameterType="java.lang.Long" resultType="java.lang.String">
     select b.role_name
     from t_user_role a JOIN t_role b on a.uid = b.id

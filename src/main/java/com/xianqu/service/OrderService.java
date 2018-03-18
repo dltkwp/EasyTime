@@ -53,8 +53,8 @@ public class OrderService {
         return orderId;
     }
 
-    public List<OrderVo> getListByUserId(Long userId, Date st, Date et, String payType, String status, String content, String recipients, String distributor, Boolean isSupplier) {
-        List<OrderVo> list = orderMapper.selectByUserId(userId, st, et,payType, status, content, recipients, distributor, isSupplier);
+    public List<OrderVo> getListByUserId(Long userId, Date st, Date et, String payType, String status, String queryKey, String distributor, String agents, Boolean isSupplier) {
+        List<OrderVo> list = orderMapper.selectByUserId(userId, st, et,payType, status, queryKey, distributor, agents, isSupplier);
         return list;
     }
 

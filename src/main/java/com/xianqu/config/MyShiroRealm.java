@@ -2,6 +2,7 @@ package com.xianqu.config;
 
 import com.xianqu.bean.User;
 import com.xianqu.service.RoleService;
+import com.xianqu.service.UserRoleService;
 import com.xianqu.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -25,7 +26,7 @@ public class MyShiroRealm extends AuthorizingRealm {
     private UserService userService;
 
     @Autowired
-    private RoleService roleService;
+    private UserRoleService userRoleService;
 
     @Override
     public AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
@@ -55,7 +56,7 @@ public class MyShiroRealm extends AuthorizingRealm {
     public AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         Session session = SecurityUtils.getSubject().getSession();
         User userInfo = (User) session.getAttribute("userSession");
-        List<String> roleList =  roleService.findRoleById(userInfo.getId());
+        List<String> roleList =  userRoleService.findRoleByUserId(userInfo.getId());
         //一般情况下，应该连真正的数据源查询出当前用户的权限字符串
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.addRoles(roleList);

@@ -14,6 +14,12 @@
     from t_role
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getRoleByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    r.id, r.role_name
+    from t_role r join t_user_role ur on r.id = ur.rid join t_user us on ur.uid = us.id
+    where us.username =  #{username,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_role
     where id = #{id,jdbcType=BIGINT}
