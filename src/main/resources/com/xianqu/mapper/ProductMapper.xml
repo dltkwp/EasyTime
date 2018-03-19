@@ -17,6 +17,43 @@
     <result column="update_user" jdbcType="BIGINT" property="updateUser" />
     <result column="is_delete" jdbcType="BIT" property="isDelete" />
   </resultMap>
+  <resultMap id="BaseVoResultMap" type="com.xianqu.bean.product.ProductListVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_no" jdbcType="BIGINT" property="productNo" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="categories_id" jdbcType="BIGINT" property="categoriesId" />
+    <result column="cost" jdbcType="DECIMAL" property="cost" />
+    <result column="recommended_retail_price" jdbcType="DECIMAL" property="recommendedRetailPrice" />
+    <result column="min_retail_price" jdbcType="DECIMAL" property="minRetailPrice" />
+    <result column="stock" jdbcType="BIGINT" property="stock" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="BIGINT" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="BIGINT" property="updateUser" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+    <collection property="images" ofType="com.xianqu.bean.ProductImage">
+      <id column="image_id" jdbcType="BIGINT" property="id"></id>
+      <result column="image_product_id" jdbcType="BIGINT" property="productId" />
+      <result column="image_code" jdbcType="VARCHAR" property="imageCode" />
+      <result column="order_number" jdbcType="INTEGER" property="orderNumber" />
+      <result column="image_create_date" jdbcType="TIMESTAMP" property="createDate" />
+      <result column="image_create_user" jdbcType="BIGINT" property="createUser" />
+    </collection>
+    <collection property="prices" ofType="com.xianqu.bean.ProductPrice">
+      <id column="price_id" jdbcType="BIGINT" property="id" />
+      <result column="price_product_id" jdbcType="BIGINT" property="productId" />
+      <result column="distributor_level_id" jdbcType="BIGINT" property="distributorLevelId" />
+      <result column="price" jdbcType="DECIMAL" property="price" />
+      <result column="allow" jdbcType="BIT" property="allow" />
+      <result column="discount" jdbcType="BIGINT" property="discount" />
+      <result column="price_create_date" jdbcType="TIMESTAMP" property="createDate" />
+      <result column="price_reate_user" jdbcType="BIGINT" property="createUser" />
+      <result column="price_update_date" jdbcType="TIMESTAMP" property="updateDate" />
+      <result column="price_update_user" jdbcType="BIGINT" property="updateUser" />
+      <result column="price_is_delete" jdbcType="BIT" property="isDelete" />
+    </collection>
+  </resultMap>
   <sql id="Base_Column_List">
     id, product_no, product_name, categories_id, cost, recommended_retail_price, min_retail_price, 
     stock, status, create_date, create_user, update_date, update_user, is_delete
@@ -33,18 +70,24 @@
     from t_product
     where create_user = #{userId,jdbcType=BIGINT} and product_name = #{productName, jdbcType=VARCHAR} AND is_delete = false
   </select>
-  <select id="selectByUserId" resultMap="BaseResultMap">
+  <select id="selectByUserId" resultMap="BaseVoResultMap">
     select
-    <include refid="Base_Column_List" />
-    from t_product
-    where create_user = #{userId,jdbcType=BIGINT} AND is_delete = false
+    p.id, p.product_no, p.product_name, p.categories_id, p.cost, p.recommended_retail_price, p.min_retail_price,
+    p.stock, p.status, p.create_date, p.create_user, p.update_date, p.update_user, p.is_delete, pi.id as image_id, pi.product_id as image_product_id, pi.image_code, pi.order_number, pi.create_date as image_create_date, pi.create_user as image_create_user,
+    pp.id as price_id, pp.product_id as price_product_id, pp.distributor_level_id, pp.price, pp.allow, pp.discount, pp.create_date as price_create_date, pp.create_user as price_create_user, pp.update_date as price_update_date,
+    pp.update_user as price_update_user, pp.is_delete as price_is_delete
+    from t_product p LEFT JOIN t_product_image pi on p.id = pi.product_id LEFT JOIN t_product_price pp on p.id = pp.product_id
+    where p.create_user = #{userId,jdbcType=BIGINT} AND p.is_delete = false
     <if test="queryKey != null and queryKey != ''">
-      AND (product_name like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%') OR product_no like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%'))
+      AND (p.product_name like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%') OR p.product_no like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%'))
     </if>
     <if test="categoriesId != null and categoriesId != ''">
-      AND categories_id = #{categoriesId,jdbcType=BIGINT}
+      AND p.categories_id = #{categoriesId,jdbcType=BIGINT}
     </if>
-    ORDER BY update_date DESC
+    <if test="status != null">
+      AND p.status = #{status, jdbcType=BIT}
+    </if>
+    ORDER BY p.update_date DESC
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_product

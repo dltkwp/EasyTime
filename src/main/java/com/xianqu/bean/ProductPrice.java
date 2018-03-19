@@ -12,6 +12,10 @@ public class ProductPrice {
 
     private BigDecimal price;
 
+    private Boolean allow;
+
+    private Integer discount;
+
     private Date createDate;
 
     private Long createUser;
@@ -52,6 +56,22 @@ public class ProductPrice {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Boolean getAllow() {
+        return allow;
+    }
+
+    public void setAllow(Boolean allow) {
+        this.allow = allow;
+    }
+
+    public Integer getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
     }
 
     public Date getCreateDate() {

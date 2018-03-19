@@ -1,23 +1,18 @@
 package com.xianqu.service;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.xianqu.bean.*;
+import com.xianqu.bean.product.ProductListVo;
 import com.xianqu.bean.product.ProductVo;
 import com.xianqu.mapper.ProductDescriptionMapper;
 import com.xianqu.mapper.ProductImageMapper;
 import com.xianqu.mapper.ProductMapper;
 import com.xianqu.mapper.ProductPriceMapper;
-import com.xianqu.util.Constant;
-import org.apache.ibatis.reflection.ArrayUtil;
-import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.jws.Oneway;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,16 +63,17 @@ public class ProductService {
             productDescriptionMapper.insert(description);
         }
 
-        List<String> images = productVo.getImages();
-        if(null != images && images.size() > 0) {
+        String image = productVo.getImages();
+        if(null != image && !"".equals(image)) {
+            String[] images = image.split(",");
             List<ProductImage> imageList = new ArrayList<ProductImage>();
-            for(int i = 0; i < images.size(); i++) {
+            for(int i = 0; i < images.length; i++) {
                 ProductImage productImage = new ProductImage();
                 productImage.setCreateDate(now);
                 productImage.setCreateUser(userId);
                 productImage.setProductId(productId);
                 productImage.setOrderNumber(i);
-                productImage.setImageCode(images.get(i));
+                productImage.setImageCode(images[i]);
                 imageList.add(productImage);
             }
             productImageMapper.insertByList(imageList);
@@ -99,8 +95,8 @@ public class ProductService {
         return productId;
     }
 
-    public List<Product> getListByUserId(Long userId, String queryKey, Long categoriesId) {
-        List<Product> list = productMapper.selectByUserId(userId, queryKey, categoriesId);
+    public List<ProductListVo> getListByUserId(Long userId, String queryKey, Long categoriesId, Boolean status) {
+        List<ProductListVo> list = productMapper.selectByUserId(userId, queryKey, categoriesId, status);
         return list;
     }
 
@@ -115,7 +111,7 @@ public class ProductService {
         List<ProductImage> productImages = productImageMapper.selectByProductId(productId);
         if(productImages != null) {
             List<String> images = productImages.stream().map(ProductImage::getImageCode).collect(Collectors.toList());
-            productVo.setImages(images);
+            productVo.setImages(org.apache.commons.lang.StringUtils.join(images, ","));
         }
 
         List<ProductPrice> productPrices = productPriceMapper.selectByProductId(productId);
@@ -153,17 +149,18 @@ public class ProductService {
             productDescriptionMapper.updateByPrimaryKeyWithBLOBs(description);
         }
 
-        List<String> images = productVo.getImages();
-        if(null != images && images.size() > 0) {
+        String image = productVo.getImages();
+        if(null != image && !"".equals(image)) {
             productImageMapper.deleteByProductId(productDto.getId());
+            String[] images = image.split(",");
             List<ProductImage> imageList = new ArrayList<ProductImage>();
-            for(int i = 0; i < images.size(); i++) {
+            for(int i = 0; i < images.length; i++) {
                 ProductImage productImage = new ProductImage();
                 productImage.setCreateDate(now);
                 productImage.setCreateUser(userId);
-                productImage.setProductId(productDto.getId());
+                productImage.setProductId(productVo.getId());
                 productImage.setOrderNumber(i);
-                productImage.setImageCode(images.get(i));
+                productImage.setImageCode(images[i]);
                 imageList.add(productImage);
             }
             productImageMapper.insertByList(imageList);

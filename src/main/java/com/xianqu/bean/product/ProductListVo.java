@@ -1,13 +1,13 @@
 package com.xianqu.bean.product;
 
+import com.xianqu.bean.ProductImage;
 import com.xianqu.bean.ProductPrice;
 
-import javax.swing.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-public class ProductVo {
+public class ProductListVo {
     private Long id;
 
     private Long productNo;
@@ -38,7 +38,7 @@ public class ProductVo {
 
     private String description;
 
-    private String images;
+    private List<ProductImage> images;
 
     private List<ProductPrice> prices;
 
@@ -63,7 +63,7 @@ public class ProductVo {
     }
 
     public void setProductName(String productName) {
-        this.productName = productName == null ? null : productName.trim();
+        this.productName = productName;
     }
 
     public Long getCategoriesId() {
@@ -146,23 +146,27 @@ public class ProductVo {
         this.updateUser = updateUser;
     }
 
-    public Boolean getIsDelete() {
+    public Boolean getDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(Boolean isDelete) {
-        this.isDelete = isDelete;
+    public void setDelete(Boolean delete) {
+        isDelete = delete;
     }
 
-    public String getDescription() {  return description; }
+    public String getDescription() {
+        return description;
+    }
 
-    public void setDescription(String description) { this.description = description; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public String getImages() {
+    public List<ProductImage> getImages() {
         return images;
     }
 
-    public void setImages(String images) {
+    public void setImages(List<ProductImage> images) {
         this.images = images;
     }
 

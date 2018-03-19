@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xianqu.mapper.OrderMapper">
-  <resultMap id="BaseResultMap" type="com.xianqu.bean.order.OrderVo">
+  <resultMap id="BaseResultMap" type="com.xianqu.bean.Order">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="recipients" jdbcType="BIGINT" property="recipients" />
+    <result column="recipients_phone" jdbcType="VARCHAR" property="recipientsPhone" />
+    <result column="recipients_address" jdbcType="VARCHAR" property="recipientsAddress" />
+    <result column="payment" jdbcType="DECIMAL" property="payment" />
+    <result column="pay_type" jdbcType="VARCHAR" property="payType" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="BIGINT" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="BIGINT" property="updateUser" />
+  </resultMap>
+  <resultMap id="BaseVoResultMap" type="com.xianqu.bean.order.OrderVo">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="product_id" jdbcType="BIGINT" property="productId" />
     <result column="content" jdbcType="VARCHAR" property="content" />
@@ -35,7 +50,7 @@
     from t_order
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectByUserId" resultMap="BaseResultMap">
+  <select id="selectByUserId" resultMap="BaseVoResultMap">
     select distinct
     o.id, o.product_id, o.content, o.recipients, o.recipients_phone, o.recipients_address, o.payment,o.pay_type, o.status, o.create_date, o.create_user, o.update_date, o.update_user, s.id as supplier_id, s.order_id, s.user_id, s.create_date as supplier_create_date, s.create_user as supplier_create_user, s.update_date as supplier_update_date, s.update_user as supplier_update_user
     from t_order o LEFT JOIN t_order_supplier s ON o.id = s.order_id LEFT JOIN t_user u ON o.create_user = u.id

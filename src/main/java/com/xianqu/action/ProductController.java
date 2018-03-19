@@ -2,10 +2,9 @@ package com.xianqu.action;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.xianqu.bean.Categories;
-import com.xianqu.bean.Product;
 import com.xianqu.bean.Result;
 import com.xianqu.bean.User;
+import com.xianqu.bean.product.ProductListVo;
 import com.xianqu.bean.product.ProductVo;
 import com.xianqu.service.ProductService;
 import com.xianqu.util.ResultUtil;
@@ -16,7 +15,6 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
@@ -34,10 +32,10 @@ public class ProductController {
     @ApiOperation(value="商品列表", notes="获取商品列表")
     @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
     @RequestMapping(value="/products", method = RequestMethod.GET)
-    public PageInfo list(@NotNull @RequestParam("pageNum") Integer pageNum,@NotNull @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "queryKey", defaultValue = "") String queryKey, @RequestParam(value = "categoriesId", required = false) Long categoriesId) throws Exception {
+    public PageInfo list(@NotNull @RequestParam("pageNum") Integer pageNum,@NotNull @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "queryKey", defaultValue = "") String queryKey, @RequestParam(value = "categoriesId", required = false) Long categoriesId, @RequestParam(value = "status", required = false) Boolean status) throws Exception {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
         PageHelper.startPage(pageNum, pageSize);
-        List<Product> list = productService.getListByUserId(userSession.getId(), queryKey, categoriesId);
+        List<ProductListVo> list = productService.getListByUserId(userSession.getId(), queryKey, categoriesId, status);
         PageInfo page = new PageInfo(list);
         return page;
     }
