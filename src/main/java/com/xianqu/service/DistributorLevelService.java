@@ -2,7 +2,9 @@ package com.xianqu.service;
 
 
 import com.xianqu.bean.DistributorLevel;
+import com.xianqu.bean.Relationship;
 import com.xianqu.mapper.DistributorLevelMapper;
+import com.xianqu.mapper.RelationshipMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,9 @@ public class DistributorLevelService {
 
     @Autowired
     private DistributorLevelMapper distributorLevelMapper;
+
+    @Autowired
+    private RelationshipMapper relationshipMapper;
 
     public DistributorLevel selectByPrimaryKey(Long id){
         return distributorLevelMapper.selectByPrimaryKey(id);
@@ -33,7 +38,10 @@ public class DistributorLevelService {
     }
 
     public int delete(Long id) {
-        //TODO 查询是否使用   使用抛出异常
+        List<Relationship> list = relationshipMapper.getUserByLevelId(id);
+        if(null != list && list.size() > 0) {
+            throw new RuntimeException("等级已使用，请更换分销商等级后再试");
+        }
         return distributorLevelMapper.deleteByPrimaryKey(id);
     }
 

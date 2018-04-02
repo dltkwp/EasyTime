@@ -13,8 +13,6 @@ public interface ProductDescriptionMapper {
 
     int updateByPrimaryKeySelective(ProductDescription record);
 
-    int updateByPrimaryKeyWithBLOBs(ProductDescription record);
-
     int updateByPrimaryKey(ProductDescription record);
 
     ProductDescription selectByProductId(Long productId);

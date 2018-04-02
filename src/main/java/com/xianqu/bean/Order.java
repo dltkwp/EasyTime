@@ -6,7 +6,7 @@ import java.util.Date;
 public class Order {
     private Long id;
 
-    private Long productId;
+    private String orderNo;
 
     private String content;
 
@@ -20,7 +20,23 @@ public class Order {
 
     private String payType;
 
+    private String payChannel;
+
+    private String outTradeNo;
+
     private String status;
+
+    private Long agentId;
+
+    private String source;
+
+    private String userType;
+
+    private Long recipientsId;
+
+    private Date reviewDate;
+
+    private Date payDate;
 
     private Date createDate;
 
@@ -38,12 +54,12 @@ public class Order {
         this.id = id;
     }
 
-    public Long getProductId() {
-        return productId;
+    public String getOrderNo() {
+        return orderNo;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 
     public String getContent() {
@@ -132,5 +148,69 @@ public class Order {
 
     public void setUpdateUser(Long updateUser) {
         this.updateUser = updateUser;
+    }
+
+    public String getPayChannel() {
+        return payChannel;
+    }
+
+    public void setPayChannel(String payChannel) {
+        this.payChannel = payChannel;
+    }
+
+    public String getOutTradeNo() {
+        return outTradeNo;
+    }
+
+    public void setOutTradeNo(String outTradeNo) {
+        this.outTradeNo = outTradeNo;
+    }
+
+    public Date getReviewDate() {
+        return reviewDate;
+    }
+
+    public void setReviewDate(Date reviewDate) {
+        this.reviewDate = reviewDate;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public Long getRecipientsId() {
+        return recipientsId;
+    }
+
+    public void setRecipientsId(Long recipientsId) {
+        this.recipientsId = recipientsId;
+    }
+
+    public Date getPayDate() {
+        return payDate;
+    }
+
+    public void setPayDate(Date payDate) {
+        this.payDate = payDate;
+    }
+
+    public Long getAgentId() {
+        return agentId;
+    }
+
+    public void setAgentId(Long agentId) {
+        this.agentId = agentId;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 }

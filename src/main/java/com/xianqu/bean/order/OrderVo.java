@@ -1,5 +1,6 @@
 package com.xianqu.bean.order;
 
+import com.xianqu.bean.OrderProduct;
 import com.xianqu.bean.OrderSupplier;
 
 import java.math.BigDecimal;
@@ -8,6 +9,8 @@ import java.util.List;
 
 public class OrderVo {
     private Long id;
+
+    private Boolean isAgent;
 
     private Long productId;
 
@@ -26,10 +29,15 @@ public class OrderVo {
      */
     private String payType;
 
+    private String payChannel;
+
+    private String outTradeNo;
     /**
      *  REVIEW-待审核 WAIT-等待发货 DELIVERY-已发货 RECEIVED-已签收
      */
     private String status;
+
+    private Long agentId;
 
     private Date createDate;
 
@@ -39,10 +47,30 @@ public class OrderVo {
 
     private Long updateUser;
 
+    private String source;
+
+    private String userType;
+
+    private Long recipientsId;
+
+    private Date reviewDate;
+
+    private Date payDate;
+
     private List<OrderSupplier> orderSupplierList;
+
+    private List<OrderProduct> orderProductList;
 
     public Long getId() {
         return id;
+    }
+
+    public Boolean getAgent() {
+        return isAgent;
+    }
+
+    public void setAgent(Boolean agent) {
+        isAgent = agent;
     }
 
     public void setId(Long id) {
@@ -151,5 +179,77 @@ public class OrderVo {
 
     public void setOrderSupplierList(List<OrderSupplier> orderSupplierList) {
         this.orderSupplierList = orderSupplierList;
+    }
+
+    public List<OrderProduct> getOrderProductList() {
+        return orderProductList;
+    }
+
+    public void setOrderProductList(List<OrderProduct> orderProductList) {
+        this.orderProductList = orderProductList;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public Long getRecipientsId() {
+        return recipientsId;
+    }
+
+    public void setRecipientsId(Long recipientsId) {
+        this.recipientsId = recipientsId;
+    }
+
+    public String getPayChannel() {
+        return payChannel;
+    }
+
+    public void setPayChannel(String payChannel) {
+        this.payChannel = payChannel;
+    }
+
+    public String getOutTradeNo() {
+        return outTradeNo;
+    }
+
+    public void setOutTradeNo(String outTradeNo) {
+        this.outTradeNo = outTradeNo;
+    }
+
+    public Date getReviewDate() {
+        return reviewDate;
+    }
+
+    public void setReviewDate(Date reviewDate) {
+        this.reviewDate = reviewDate;
+    }
+
+    public Date getPayDate() {
+        return payDate;
+    }
+
+    public void setPayDate(Date payDate) {
+        this.payDate = payDate;
+    }
+
+    public Long getAgentId() {
+        return agentId;
+    }
+
+    public void setAgentId(Long agentId) {
+        this.agentId = agentId;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xianqu.bean.*;
 import com.xianqu.service.RoleService;
 import com.xianqu.service.UserService;
+import com.xianqu.service.WxLoginService;
 import com.xianqu.util.ResultUtil;
 import io.swagger.annotations.*;
 import org.apache.shiro.SecurityUtils;
@@ -98,7 +99,6 @@ public class LoginController {
         newUser.setId(userSession.getId());
         newUser.setPassword(newPassword);
         userService.updateByPrimaryKeySelective(newUser);
-
         return ResultUtil.success();
     }
 }

@@ -38,6 +38,8 @@ public class ProductListVo {
 
     private String description;
 
+    private Boolean isOwner;
+
     private List<ProductImage> images;
 
     private List<ProductPrice> prices;
@@ -162,6 +164,14 @@ public class ProductListVo {
         this.description = description;
     }
 
+    public Boolean getOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(Boolean owner) {
+        isOwner = owner;
+    }
+
     public List<ProductImage> getImages() {
         return images;
     }
@@ -176,5 +186,29 @@ public class ProductListVo {
 
     public void setPrices(List<ProductPrice> prices) {
         this.prices = prices;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductListVo{" +
+                "id=" + id +
+                ", productNo=" + productNo +
+                ", productName='" + productName + '\'' +
+                ", categoriesId=" + categoriesId +
+                ", cost=" + cost +
+                ", recommendedRetailPrice=" + recommendedRetailPrice +
+                ", minRetailPrice=" + minRetailPrice +
+                ", stock=" + stock +
+                ", status=" + status +
+                ", createDate=" + createDate +
+                ", createUser=" + createUser +
+                ", updateDate=" + updateDate +
+                ", updateUser=" + updateUser +
+                ", isDelete=" + isDelete +
+                ", description='" + description + '\'' +
+                ", isOwner=" + isOwner +
+                ", images=" + images +
+                ", prices=" + prices +
+                '}';
     }
 }

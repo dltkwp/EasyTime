@@ -129,17 +129,6 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xianqu.bean.ProductDescription">
-    update t_product_description
-    set product_id = #{productId,jdbcType=BIGINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      create_user = #{createUser,jdbcType=BIGINT},
-      update_date = #{updateDate,jdbcType=TIMESTAMP},
-      update_user = #{updateUser,jdbcType=BIGINT},
-      is_delete = #{isDelete,jdbcType=BIT},
-      description = #{description,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
   <update id="updateByPrimaryKey" parameterType="com.xianqu.bean.ProductDescription">
     update t_product_description
     set product_id = #{productId,jdbcType=BIGINT},

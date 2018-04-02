@@ -32,6 +32,7 @@
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="update_user" jdbcType="BIGINT" property="updateUser" />
     <result column="is_delete" jdbcType="BIT" property="isDelete" />
+    <result column="is_owner" jdbcType="BIT" property="isOwner"/>
     <collection property="images" ofType="com.xianqu.bean.ProductImage">
       <id column="image_id" jdbcType="BIGINT" property="id"></id>
       <result column="image_product_id" jdbcType="BIGINT" property="productId" />
@@ -44,6 +45,7 @@
       <id column="price_id" jdbcType="BIGINT" property="id" />
       <result column="price_product_id" jdbcType="BIGINT" property="productId" />
       <result column="distributor_level_id" jdbcType="BIGINT" property="distributorLevelId" />
+      <result column="distributor_level_name" jdbcType="VARCHAR" property="distributorLevelName" />
       <result column="price" jdbcType="DECIMAL" property="price" />
       <result column="allow" jdbcType="BIT" property="allow" />
       <result column="discount" jdbcType="BIGINT" property="discount" />
@@ -71,23 +73,90 @@
     where create_user = #{userId,jdbcType=BIGINT} and product_name = #{productName, jdbcType=VARCHAR} AND is_delete = false
   </select>
   <select id="selectByUserId" resultMap="BaseVoResultMap">
-    select
-    p.id, p.product_no, p.product_name, p.categories_id, p.cost, p.recommended_retail_price, p.min_retail_price,
-    p.stock, p.status, p.create_date, p.create_user, p.update_date, p.update_user, p.is_delete, pi.id as image_id, pi.product_id as image_product_id, pi.image_code, pi.order_number, pi.create_date as image_create_date, pi.create_user as image_create_user,
-    pp.id as price_id, pp.product_id as price_product_id, pp.distributor_level_id, pp.price, pp.allow, pp.discount, pp.create_date as price_create_date, pp.create_user as price_create_user, pp.update_date as price_update_date,
-    pp.update_user as price_update_user, pp.is_delete as price_is_delete
-    from t_product p LEFT JOIN t_product_image pi on p.id = pi.product_id LEFT JOIN t_product_price pp on p.id = pp.product_id
-    where p.create_user = #{userId,jdbcType=BIGINT} AND p.is_delete = false
-    <if test="queryKey != null and queryKey != ''">
-      AND (p.product_name like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%') OR p.product_no like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%'))
+    <if test="isOwner != null and isOwner == true">
+        select
+        p.id, p.product_no, p.product_name, p.categories_id, p.cost, p.recommended_retail_price, p.min_retail_price,
+        p.stock, p.status, p.create_date, p.create_user, p.update_date, p.update_user, p.is_delete, pi.id as image_id, pi.product_id as image_product_id, pi.image_code, pi.order_number, pi.create_date as image_create_date, pi.create_user as image_create_user,
+        pp.id as price_id, pp.product_id as price_product_id, pp.distributor_level_id, dl.level_name as distributor_level_name , pp.price, pp.allow, pp.discount, pp.create_date as price_create_date, pp.create_user as price_create_user, pp.update_date as price_update_date,
+        pp.update_user as price_update_user, pp.is_delete as price_is_delete, 1 as is_owner
+        from t_product p LEFT JOIN t_product_image pi on p.id = pi.product_id LEFT JOIN t_product_price pp on p.id = pp.product_id join t_distributor_level dl on pp.distributor_level_id = dl.id
+        where p.is_delete = false AND p.create_user = #{userId,jdbcType=BIGINT}
+        <if test="isOwner != null and isOwner == false">
+          and p.create_user in (select pid from t_relationship WHERE uid = #{userId,jdbcType=BIGINT})
+          #{item}
+        </if>
+
+        <if test="queryKey != null and queryKey != ''">
+          AND (p.product_name like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%') OR p.product_no like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%'))
+        </if>
+        <if test="categoriesId != null and categoriesId != ''">
+          AND p.categories_id = #{categoriesId,jdbcType=BIGINT}
+        </if>
+        <if test="status != null">
+          AND p.status = #{status, jdbcType=BIT}
+        </if>
+        ORDER BY p.update_date DESC
     </if>
-    <if test="categoriesId != null and categoriesId != ''">
-      AND p.categories_id = #{categoriesId,jdbcType=BIGINT}
+    <if test="isOwner != null and isOwner == false">
+      select
+      p.id, p.product_no, p.product_name, p.categories_id, p.cost, p.recommended_retail_price, p.min_retail_price,
+      p.stock, p.status, p.create_date, p.create_user, p.update_date, p.update_user, p.is_delete, pi.id as image_id, pi.product_id as image_product_id, pi.image_code, pi.order_number, pi.create_date as image_create_date, pi.create_user as image_create_user,
+      pp.id as price_id, pp.product_id as price_product_id, pp.distributor_level_id, pp.price, pp.allow, pp.discount, pp.create_date as price_create_date, pp.create_user as price_create_user, pp.update_date as price_update_date,
+      pp.update_user as price_update_user, pp.is_delete as price_is_delete, 0 as is_owner
+      from t_product p LEFT JOIN t_product_image pi on p.id = pi.product_id LEFT JOIN t_product_price pp on p.id = pp.product_id
+      where p.is_delete = false AND p.create_user in (select pid from t_relationship WHERE uid = #{userId,jdbcType=BIGINT})
+      <if test="queryKey != null and queryKey != ''">
+        AND (p.product_name like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%') OR p.product_no like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%'))
+      </if>
+      <if test="categoriesId != null and categoriesId != ''">
+        AND p.categories_id = #{categoriesId,jdbcType=BIGINT}
+      </if>
+      <if test="status != null">
+        AND p.status = #{status, jdbcType=BIT}
+      </if>
+      ORDER BY p.update_date DESC
     </if>
-    <if test="status != null">
-      AND p.status = #{status, jdbcType=BIT}
+    <if test="isOwner == null ">
+      select
+      p.id, p.product_no, p.product_name, p.categories_id, p.cost, p.recommended_retail_price, p.min_retail_price,
+      p.stock, p.status, p.create_date, p.create_user, p.update_date, p.update_user, p.is_delete, pi.id as image_id, pi.product_id as image_product_id, pi.image_code, pi.order_number, pi.create_date as image_create_date, pi.create_user as image_create_user,
+      pp.id as price_id, pp.product_id as price_product_id, pp.distributor_level_id, pp.price, pp.allow, pp.discount, pp.create_date as price_create_date, pp.create_user as price_create_user, pp.update_date as price_update_date,
+      pp.update_user as price_update_user, pp.is_delete as price_is_delete, 0 as is_owner
+      from t_product p LEFT JOIN t_product_image pi on p.id = pi.product_id LEFT JOIN t_product_price pp on p.id = pp.product_id
+      where p.is_delete = false AND p.create_user in (select pid from t_relationship WHERE uid = #{userId,jdbcType=BIGINT})
+      <if test="queryKey != null and queryKey != ''">
+        AND (p.product_name like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%') OR p.product_no like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%'))
+      </if>
+      <if test="categoriesId != null and categoriesId != ''">
+        AND p.categories_id = #{categoriesId,jdbcType=BIGINT}
+      </if>
+      <if test="status != null">
+        AND p.status = #{status, jdbcType=BIT}
+      </if>
+      UNION ALL
+      select
+      p.id, p.product_no, p.product_name, p.categories_id, p.cost, p.recommended_retail_price, p.min_retail_price,
+      p.stock, p.status, p.create_date, p.create_user, p.update_date, p.update_user, p.is_delete, pi.id as image_id, pi.product_id as image_product_id, pi.image_code, pi.order_number, pi.create_date as image_create_date, pi.create_user as image_create_user,
+      pp.id as price_id, pp.product_id as price_product_id, pp.distributor_level_id, pp.price, pp.allow, pp.discount, pp.create_date as price_create_date, pp.create_user as price_create_user, pp.update_date as price_update_date,
+      pp.update_user as price_update_user, pp.is_delete as price_is_delete, 1 as is_owner
+      from t_product p LEFT JOIN t_product_image pi on p.id = pi.product_id LEFT JOIN t_product_price pp on p.id = pp.product_id
+      where p.is_delete = false AND p.create_user = #{userId,jdbcType=BIGINT}
+      <if test="isOwner != null and isOwner == false">
+        and p.create_user in (select pid from t_relationship WHERE uid = #{userId,jdbcType=BIGINT})
+        #{item}
+      </if>
+
+      <if test="queryKey != null and queryKey != ''">
+        AND (p.product_name like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%') OR p.product_no like CONCAT('%',#{queryKey,jdbcType=VARCHAR},'%'))
+      </if>
+      <if test="categoriesId != null and categoriesId != ''">
+        AND p.categories_id = #{categoriesId,jdbcType=BIGINT}
+      </if>
+      <if test="status != null">
+        AND p.status = #{status, jdbcType=BIT}
+      </if>
+      ORDER BY is_owner, update_date DESC
     </if>
-    ORDER BY p.update_date DESC
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_product

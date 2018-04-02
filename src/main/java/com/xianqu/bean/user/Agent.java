@@ -1,10 +1,9 @@
-package com.xianqu.bean;
+package com.xianqu.bean.user;
 
 public class Agent {
     private Long id;
     private String username;
     private String realname;
-    private String phone;
     private String wechart;
     private String alipay;
     private String levelName;
@@ -33,14 +32,6 @@ public class Agent {
 
     public void setRealname(String realname) {
         this.realname = realname;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public String getWechart() {
@@ -89,7 +80,6 @@ public class Agent {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", realname='" + realname + '\'' +
-                ", phone='" + phone + '\'' +
                 ", wechart='" + wechart + '\'' +
                 ", alipay='" + alipay + '\'' +
                 ", levelName='" + levelName + '\'' +

@@ -4,6 +4,7 @@ import com.xianqu.bean.Product;
 import com.xianqu.bean.product.ProductListVo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ProductMapper {
@@ -21,5 +22,6 @@ public interface ProductMapper {
 
     Product selectByName(@Param("productName") String productName, @Param("userId") Long userId);
 
-    List<ProductListVo> selectByUserId(@Param("userId") Long userId, @Param("queryKey") String queryKey, @Param("categoriesId") Long categoriesId, @Param("status") Boolean status);
+    List<ProductListVo> selectByUserId(@Param("userId") Long userId, @Param("queryKey") String queryKey, @Param("categoriesId") Long categoriesId, @Param("status") Boolean status, @Param("isOwner") Boolean isOwner);
+
 }

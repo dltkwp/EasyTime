@@ -36,9 +36,13 @@ public class ProductVo {
 
     private Boolean isDelete;
 
+    private Long discriptionId;
+
     private String description;
 
     private String images;
+
+    private Boolean isOwner;
 
     private List<ProductPrice> prices;
 
@@ -166,11 +170,52 @@ public class ProductVo {
         this.images = images;
     }
 
+    public Boolean getOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(Boolean owner) {
+        isOwner = owner;
+    }
+
     public List<ProductPrice> getPrices() {
         return prices;
     }
 
     public void setPrices(List<ProductPrice> prices) {
         this.prices = prices;
+    }
+
+    public Long getDiscriptionId() {
+        return discriptionId;
+    }
+
+    public void setDiscriptionId(Long discriptionId) {
+        this.discriptionId = discriptionId;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductVo{" +
+                "id=" + id +
+                ", productNo=" + productNo +
+                ", productName='" + productName + '\'' +
+                ", categoriesId=" + categoriesId +
+                ", cost=" + cost +
+                ", recommendedRetailPrice=" + recommendedRetailPrice +
+                ", minRetailPrice=" + minRetailPrice +
+                ", stock=" + stock +
+                ", status=" + status +
+                ", createDate=" + createDate +
+                ", createUser=" + createUser +
+                ", updateDate=" + updateDate +
+                ", updateUser=" + updateUser +
+                ", isDelete=" + isDelete +
+                ", discriptionId=" + discriptionId +
+                ", description='" + description + '\'' +
+                ", images='" + images + '\'' +
+                ", isOwner=" + isOwner +
+                ", prices=" + prices +
+                '}';
     }
 }

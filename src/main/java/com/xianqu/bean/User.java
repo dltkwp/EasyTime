@@ -26,14 +26,17 @@ public class User implements Serializable {
     @ApiModelProperty(value = "名称")
     private String realname;
 
-    @ApiModelProperty(value = "电话")
-    private String phone;
+    @ApiModelProperty(value = "openId", hidden=true)
+    private String openId;
 
     @ApiModelProperty(value = "微信")
     private String wechart;
 
     @ApiModelProperty(value = "支付宝")
     private String alipay;
+
+    @ApiModelProperty(value = "备注")
+    private String comment;
 
     @ApiModelProperty(value = "创建时间", hidden=true)
     @JsonIgnore
@@ -79,12 +82,12 @@ public class User implements Serializable {
         this.realname = realname == null ? null : realname.trim();
     }
 
-    public String getPhone() {
-        return phone;
+    public String getOpenId() {
+        return openId;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 
     public String getWechart() {
@@ -101,6 +104,14 @@ public class User implements Serializable {
 
     public void setAlipay(String alipay) {
         this.alipay = alipay == null ? null : alipay.trim();
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment == null ? null : comment.trim();
     }
 
     public Date getCreateDate() {
@@ -134,9 +145,10 @@ public class User implements Serializable {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", realname='" + realname + '\'' +
-                ", phone='" + phone + '\'' +
+                ", openId='" + openId + '\'' +
                 ", wechart='" + wechart + '\'' +
                 ", alipay='" + alipay + '\'' +
+                ", comment='" + comment + '\'' +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
                 ", isDelete=" + isDelete +

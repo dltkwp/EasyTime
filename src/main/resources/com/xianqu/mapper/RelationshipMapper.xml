@@ -7,11 +7,10 @@
     <result column="pid" jdbcType="BIGINT" property="pid" />
     <result column="distributor_level_id" jdbcType="BIGINT" property="distributorLevelId" />
   </resultMap>
-  <resultMap id="UserResultMap" type="com.xianqu.bean.Agent">
+  <resultMap id="UserResultMap" type="com.xianqu.bean.user.Agent">
     <id column="id" jdbcType="BIGINT" property="id"></id>
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="realname" jdbcType="VARCHAR" property="realname" />
-    <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="wechart" jdbcType="VARCHAR" property="wechart" />
     <result column="alipay" jdbcType="VARCHAR" property="alipay" />
     <result column="level_name" jdbcType="VARCHAR" property="levelName"/>
@@ -25,12 +24,24 @@
     from t_relationship
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getUserByAgentId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_relationship
+    where uid = #{agentId,jdbcType=BIGINT}
+  </select>
+  <select id="getUserByLevelId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_relationship
+    where distributor_level_id = #{levelId,jdbcType=BIGINT}
+  </select>
   <select id="getUserByPid" resultMap="UserResultMap">
-    select r.id, u.username, u.realname, u.phone, u.wechart, u.alipay, l.level_name
+    select r.id, u.username, u.realname, u.wechart, u.alipay, l.level_name
     from t_relationship r join t_user u on r.uid = u.id AND r.pid = #{pid,jdbcType=BIGINT} left join t_distributor_level l on r.distributor_level_id = l.id
     <where>
       <if test="queryKey != null and queryKey != ''">
-        (u.username like CONCAT('%',#{queryKey, jdbcType=VARCHAR},'%') OR u.phone like CONCAT('%',#{queryKey, jdbcType=VARCHAR},'%'))
+        (u.username like CONCAT('%',#{queryKey, jdbcType=VARCHAR},'%') OR u.username like CONCAT('%',#{queryKey, jdbcType=VARCHAR},'%'))
       </if>
       <if test="levelId != null">
         l.id = #{levelId, jdbcType=BIGINT}

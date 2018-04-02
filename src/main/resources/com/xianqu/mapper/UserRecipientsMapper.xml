@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xianqu.mapper.UserRecipientsMapper">
+  <resultMap id="BaseResultMap" type="com.xianqu.bean.UserRecipients">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="recipients_phone" jdbcType="VARCHAR" property="recipientsPhone" />
+    <result column="recipients_address" jdbcType="VARCHAR" property="recipientsAddress" />
+    <result column="is_default" jdbcType="BIT" property="isDefault" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, recipients_phone, recipients_address, is_default
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_recipients
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_user_recipients
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.xianqu.bean.UserRecipients">
+    insert into t_user_recipients (id, user_id, recipients_phone, 
+      recipients_address, is_default)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{recipientsPhone,jdbcType=VARCHAR}, 
+      #{recipientsAddress,jdbcType=VARCHAR}, #{isDefault,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xianqu.bean.UserRecipients">
+    insert into t_user_recipients
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="recipientsPhone != null">
+        recipients_phone,
+      </if>
+      <if test="recipientsAddress != null">
+        recipients_address,
+      </if>
+      <if test="isDefault != null">
+        is_default,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="recipientsPhone != null">
+        #{recipientsPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="recipientsAddress != null">
+        #{recipientsAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null">
+        #{isDefault,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xianqu.bean.UserRecipients">
+    update t_user_recipients
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="recipientsPhone != null">
+        recipients_phone = #{recipientsPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="recipientsAddress != null">
+        recipients_address = #{recipientsAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null">
+        is_default = #{isDefault,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xianqu.bean.UserRecipients">
+    update t_user_recipients
+    set user_id = #{userId,jdbcType=BIGINT},
+      recipients_phone = #{recipientsPhone,jdbcType=VARCHAR},
+      recipients_address = #{recipientsAddress,jdbcType=VARCHAR},
+      is_default = #{isDefault,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

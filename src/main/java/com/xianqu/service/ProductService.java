@@ -3,16 +3,14 @@ package com.xianqu.service;
 import com.xianqu.bean.*;
 import com.xianqu.bean.product.ProductListVo;
 import com.xianqu.bean.product.ProductVo;
-import com.xianqu.mapper.ProductDescriptionMapper;
-import com.xianqu.mapper.ProductImageMapper;
-import com.xianqu.mapper.ProductMapper;
-import com.xianqu.mapper.ProductPriceMapper;
+import com.xianqu.mapper.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.management.relation.Relation;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +33,9 @@ public class ProductService {
 
     @Autowired
     private ProductPriceMapper productPriceMapper;
+
+    @Autowired
+    private RelationshipMapper relationshipMapper;
 
     public Long insert(ProductVo productVo, Long userId) {
         Product hasProduct = productMapper.selectByName(productVo.getProductName(), userId);
@@ -66,7 +67,7 @@ public class ProductService {
         String image = productVo.getImages();
         if(null != image && !"".equals(image)) {
             String[] images = image.split(",");
-            List<ProductImage> imageList = new ArrayList<ProductImage>();
+            List<ProductImage> imageList = new ArrayList<>();
             for(int i = 0; i < images.length; i++) {
                 ProductImage productImage = new ProductImage();
                 productImage.setCreateDate(now);
@@ -95,9 +96,8 @@ public class ProductService {
         return productId;
     }
 
-    public List<ProductListVo> getListByUserId(Long userId, String queryKey, Long categoriesId, Boolean status) {
-        List<ProductListVo> list = productMapper.selectByUserId(userId, queryKey, categoriesId, status);
-        return list;
+    public List<ProductListVo> getListByUserId(Long userId, String queryKey, Long categoriesId, Boolean status, Boolean isOwner) {
+        return productMapper.selectByUserId(userId, queryKey, categoriesId, status, isOwner);
     }
 
     public ProductVo selectByPrimaryKey(Long productId) {
@@ -106,6 +106,7 @@ public class ProductService {
         BeanUtils.copyProperties(product, productVo);
         ProductDescription description = productDescriptionMapper.selectByProductId(productId);
         if(description != null) {
+            productVo.setDiscriptionId(description.getId());
             productVo.setDescription(description.getDescription());
         }
         List<ProductImage> productImages = productImageMapper.selectByProductId(productId);
@@ -130,7 +131,7 @@ public class ProductService {
 
     public void update(ProductVo productVo, Long userId) {
         Product hasProduct = productMapper.selectByName(productVo.getProductName(), userId);
-        if (null != hasProduct && productVo.getId().equals(hasProduct.getId())) {
+        if (null != hasProduct && !productVo.getId().equals(hasProduct.getId())) {
             throw new RuntimeException("商品名已存在");
         }
         Product productDto = new Product();
@@ -142,18 +143,18 @@ public class ProductService {
 
         if (!StringUtils.isEmpty(productVo.getDescription())) {
             ProductDescription description = new ProductDescription();
-            description.setProductId(productDto.getId());
+            description.setId(productVo.getCategoriesId());
             description.setUpdateDate(now);
             description.setUpdateUser(userId);
             description.setDescription(null == productVo.getDescription() ? "" : productVo.getDescription());
-            productDescriptionMapper.updateByPrimaryKeyWithBLOBs(description);
+            productDescriptionMapper.updateByPrimaryKeySelective(description);
         }
 
         String image = productVo.getImages();
         if(null != image && !"".equals(image)) {
             productImageMapper.deleteByProductId(productDto.getId());
             String[] images = image.split(",");
-            List<ProductImage> imageList = new ArrayList<ProductImage>();
+            List<ProductImage> imageList = new ArrayList<>();
             for(int i = 0; i < images.length; i++) {
                 ProductImage productImage = new ProductImage();
                 productImage.setCreateDate(now);

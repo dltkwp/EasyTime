@@ -10,6 +10,8 @@ public class ProductPrice {
 
     private Long distributorLevelId;
 
+    private Long distributorLevelName;
+
     private BigDecimal price;
 
     private Boolean allow;
@@ -48,6 +50,14 @@ public class ProductPrice {
 
     public void setDistributorLevelId(Long distributorLevelId) {
         this.distributorLevelId = distributorLevelId;
+    }
+
+    public Long getDistributorLevelName() {
+        return distributorLevelName;
+    }
+
+    public void setDistributorLevelName(Long distributorLevelName) {
+        this.distributorLevelName = distributorLevelName;
     }
 
     public BigDecimal getPrice() {

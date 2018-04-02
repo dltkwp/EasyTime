@@ -12,9 +12,6 @@ public class UserVo {
     @ApiModelProperty(value = "名称")
     private String realname;
 
-    @ApiModelProperty(value = "电话")
-    private String phone;
-
     @ApiModelProperty(value = "微信")
     private String wechart;
 
@@ -48,14 +45,6 @@ public class UserVo {
         this.realname = realname == null ? null : realname.trim();
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
-    }
-
     public String getWechart() {
         return wechart;
     }
@@ -86,7 +75,6 @@ public class UserVo {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", realname='" + realname + '\'' +
-                ", phone='" + phone + '\'' +
                 ", wechart='" + wechart + '\'' +
                 ", alipay='" + alipay + '\'' +
                 ", levelId='" + levelId + '\'' +

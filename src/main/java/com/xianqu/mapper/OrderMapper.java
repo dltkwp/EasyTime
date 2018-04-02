@@ -18,7 +18,5 @@ public interface OrderMapper {
 
     int updateByPrimaryKeySelective(Order record);
 
-    int updateByPrimaryKey(Order record);
-
     List<OrderVo> selectByUserId(@Param("userId") Long userId, @Param("st")  Date st,@Param("et")  Date et,@Param("payType")  String payType, @Param("queryKey") String queryKey, @Param("status") String status, @Param("distributor") String distributor,@Param("agents") String agents,@Param("isSupplier") Boolean isSupplier);
 }

@@ -2,9 +2,11 @@ package com.xianqu.action;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.xianqu.bean.Agent;
+import com.xianqu.bean.user.Agent;
 import com.xianqu.bean.Result;
 import com.xianqu.bean.User;
+import com.xianqu.bean.user.Normal;
+import com.xianqu.bean.user.NormalVo;
 import com.xianqu.bean.user.UserVo;
 import com.xianqu.service.UserService;
 import com.xianqu.util.ResultUtil;
@@ -35,7 +37,6 @@ public class UserController {
     @ApiOperation(value="注册新用户", notes="根据用户名密码创建用户")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "query"),
-        @ApiImplicitParam(name = "phone", value = "电话", required = true, dataType = "String", paramType = "query"),
         @ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "String", paramType = "query")
     })
     @RequestMapping(value="/user", method = RequestMethod.POST)
@@ -91,6 +92,28 @@ public class UserController {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
         PageHelper.startPage(pageNum, pageSize);
         List<Agent> userList = userService.getUserByPid(userSession.getId(), queryKey, levelId);
+        PageInfo page = new PageInfo(userList);
+        return page;
+    }
+
+    @ApiOperation(value="添加客户", notes="添加客户")
+    @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
+    @RequestMapping(value="/user/normal", method = RequestMethod.POST)
+    public Result addNormal(@RequestBody NormalVo normalVo) throws Exception {
+        User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
+        Long pid = userSession.getId();
+        String password= new SimpleHash("MD5", "12345678", ByteSource.Util.bytes(normalVo.getRecipientsPhone() + SALT),2).toHex();
+        userService.addNormal(normalVo, password, pid);
+        return ResultUtil.success();
+    }
+
+    @ApiOperation(value="查看客户", notes="查看客户")
+    @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
+    @RequestMapping(value="/user/normal", method = RequestMethod.GET)
+    public PageInfo getNormal(@NotNull @RequestParam("pageNum") Integer pageNum, @NotNull @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "queryKey",  required = false) String queryKey) throws Exception {
+        User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
+        PageHelper.startPage(pageNum, pageSize);
+        List<Normal> userList = userService.getUserByAgentId(userSession.getId(), queryKey);
         PageInfo page = new PageInfo(userList);
         return page;
     }

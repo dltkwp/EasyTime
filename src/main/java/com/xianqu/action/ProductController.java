@@ -32,10 +32,10 @@ public class ProductController {
     @ApiOperation(value="商品列表", notes="获取商品列表")
     @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
     @RequestMapping(value="/products", method = RequestMethod.GET)
-    public PageInfo list(@NotNull @RequestParam("pageNum") Integer pageNum,@NotNull @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "queryKey", defaultValue = "") String queryKey, @RequestParam(value = "categoriesId", required = false) Long categoriesId, @RequestParam(value = "status", required = false) Boolean status) throws Exception {
+    public PageInfo list(@NotNull @RequestParam("pageNum") Integer pageNum,@NotNull @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "queryKey", defaultValue = "") String queryKey, @RequestParam(value = "categoriesId", required = false) Long categoriesId, @RequestParam(value = "status", required = false) Boolean status, @RequestParam(value = "isOwner", required = false) Boolean isOwner) throws Exception {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
         PageHelper.startPage(pageNum, pageSize);
-        List<ProductListVo> list = productService.getListByUserId(userSession.getId(), queryKey, categoriesId, status);
+        List<ProductListVo> list = productService.getListByUserId(userSession.getId(), queryKey, categoriesId, status, isOwner);
         PageInfo page = new PageInfo(list);
         return page;
     }
@@ -63,6 +63,10 @@ public class ProductController {
     @RequestMapping(value="/products/{productId}", method = RequestMethod.GET)
     public ProductVo get(@PathVariable("productId") Long productId) throws Exception {
         ProductVo productVo = productService.selectByPrimaryKey(productId);
+        User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
+        if(productVo.getCreateUser().equals(userSession.getId())) {
+            productVo.setOwner(true);
+        }
         return productVo;
     }
 

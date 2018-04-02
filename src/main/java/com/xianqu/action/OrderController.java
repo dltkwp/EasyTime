@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -93,12 +94,38 @@ public class OrderController {
         return orderExpress;
     }
 
-    @ApiOperation(value="发货", notes="发货")
+    @ApiOperation(value="改价", notes="改价")
     @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header")
-    @RequestMapping(value="/delivery", method = RequestMethod.PUT)
-    public Result deliveryUpdate(@NotNull @RequestParam(value = "id") Long id, @NotNull @RequestParam(value = "orderId") Long orderId, @NotNull @RequestParam(value = "company") String company, @NotNull @RequestParam(value = "expressOrder") String expressOrder) throws Exception {
+    @RequestMapping(value="/orders/pay", method = RequestMethod.POST)
+    public Result changePayment(@NotNull @RequestParam(value = "orderId") Long orderId, @NotNull @RequestParam(value = "payment") String payment, @RequestParam("comment") String comment) throws Exception {
         User userSession = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
-        orderService.updateDelivery(userSession.getId(), id, orderId, company, expressOrder);
+        orderService.changePayment(userSession.getId(), orderId, payment, comment);
+        return ResultUtil.success();
+    }
+
+    @ApiOperation(value="订单审核", notes="订单审核")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "orderId", value = "订单ID", required = true, dataType = "String", paramType = "path")
+    })
+    @RequestMapping(value="/orders/{orderId}/review", method = RequestMethod.GET)
+    public OrderVo review(@PathVariable("orderId") Long orderId) throws Exception {
+        OrderVo orderVo = orderService.selectByPrimaryKey(orderId);
+        return orderVo;
+    }
+
+    @ApiOperation(value="审核通过", notes="订单通过")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "鉴权", required = true, dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "orderId", value = "订单ID", required = true, dataType = "String", paramType = "path")
+    })
+    @RequestMapping(value="/orders/{orderId}/review/success", method = RequestMethod.GET)
+    public Result reviewSuccess(@PathVariable("orderId") Long orderId, @RequestParam("payment") String payment) throws Exception {
+        Order order = new Order();
+        order.setId(orderId);
+        order.setStatus("WAIT");
+        order.setPayment(new BigDecimal(payment));
+        orderService.reviewSuccess(order);
         return ResultUtil.success();
     }
 }

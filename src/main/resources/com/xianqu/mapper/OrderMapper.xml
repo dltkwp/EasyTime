@@ -3,7 +3,6 @@
 <mapper namespace="com.xianqu.mapper.OrderMapper">
   <resultMap id="BaseResultMap" type="com.xianqu.bean.Order">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="product_id" jdbcType="BIGINT" property="productId" />
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="recipients" jdbcType="BIGINT" property="recipients" />
     <result column="recipients_phone" jdbcType="VARCHAR" property="recipientsPhone" />
@@ -15,34 +14,58 @@
     <result column="create_user" jdbcType="BIGINT" property="createUser" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="update_user" jdbcType="BIGINT" property="updateUser" />
+    <result column="pay_channel" jdbcType="VARCHAR" property="updateDate" />
+    <result column="out_trade_no" jdbcType="VARCHAR" property="updateUser" />
+    <result column="agent_id" jdbcType="BIGINT" property="agentId" />
+    <result column="user_type" jdbcType="BIGINT" property="userType" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
   </resultMap>
   <resultMap id="BaseVoResultMap" type="com.xianqu.bean.order.OrderVo">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
     <result column="content" jdbcType="VARCHAR" property="content" />
-    <result column="recipients" jdbcType="BIGINT" property="recipients" />
+    <result column="recipients_id" jdbcType="BIGINT" property="recipients_id" />
+    <result column="recipients" jdbcType="VARCHAR" property="recipients" />
     <result column="recipients_phone" jdbcType="VARCHAR" property="recipientsPhone" />
     <result column="recipients_address" jdbcType="VARCHAR" property="recipientsAddress" />
     <result column="payment" jdbcType="DECIMAL" property="payment" />
     <result column="pay_type" jdbcType="VARCHAR" property="payType" />
+    <result column="pay_channel" jdbcType="VARCHAR" property="updateDate" />
+    <result column="out_trade_no" jdbcType="VARCHAR" property="updateUser" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="create_user" jdbcType="BIGINT" property="createUser" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="update_user" jdbcType="BIGINT" property="updateUser" />
-    <collection property="orderSupplierList" ofType="com.xianqu.bean.OrderSupplier">
+    <result column="agent_id" jdbcType="BIGINT" property="agentId" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="user_type" jdbcType="BIGINT" property="userType" />
+    <result column="review_date" jdbcType="TIMESTAMP" property="reviewDate" />
+    <result column="pay_date" jdbcType="TIMESTAMP" property="payDate" />
+    <collection property="orderSupplierList" ofType="com.xianqu.bean.order.OrderSupplierVo">
       <id property="id" column="supplier_id"></id>
       <result property="orderId" column="order_id"></result>
       <result property="userId" column="user_id"></result>
+      <result property="realname" column="supplier_realname"></result>
       <result property="createDate" column="supplier_create_date"></result>
       <result property="createUser" column="supplier_create_user"></result>
       <result property="updateDate" column="supplier_update_date"></result>
       <result property="updateUser" column="supplier_update_user"></result>
     </collection>
+    <collection property="orderProductList" ofType="com.xianqu.bean.OrderProduct">
+      <id property="id" column="supplier_id"></id>
+      <result property="orderId" column="order_id"></result>
+      <result property="productId" column="product_id"></result>
+      <result property="productName" column="product_name"></result>
+      <result property="productNumber" column="product_number"></result>
+      <result property="productPrice" column="product_price"></result>
+      <result property="createDate" column="product_create_date"></result>
+      <result property="createUser" column="product_create_user"></result>
+    </collection>
   </resultMap>
   <sql id="Base_Column_List">
-    id, product_id, content, recipients, recipients_phone, recipients_address, payment, 
-    pay_type, status, create_date, create_user, update_date, update_user
+    id, order_no, content, recipients_id, recipients, recipients_phone, recipients_address, payment,
+    pay_type,pay_channel, out_trade_no, status, agent_id, source, user_type, review_date, pay_date, create_date, create_user, update_date, update_user
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -52,8 +75,8 @@
   </select>
   <select id="selectByUserId" resultMap="BaseVoResultMap">
     select distinct
-    o.id, o.product_id, o.content, o.recipients, o.recipients_phone, o.recipients_address, o.payment,o.pay_type, o.status, o.create_date, o.create_user, o.update_date, o.update_user, s.id as supplier_id, s.order_id, s.user_id, s.create_date as supplier_create_date, s.create_user as supplier_create_user, s.update_date as supplier_update_date, s.update_user as supplier_update_user
-    from t_order o LEFT JOIN t_order_supplier s ON o.id = s.order_id LEFT JOIN t_user u ON o.create_user = u.id
+    o.id, o.order_no, o.content, o.recipients_id, o.recipients, o.recipients_phone, o.recipients_address, o.payment, o.pay_type, o.status, o.create_date, o.create_user, o.update_date, o.update_user,o.agent_id, o.source, o.user_type, o.pay_channel, o.out_trade_no, o.review_date, o.pay_date ,s.id as supplier_id, s.order_id, s.user_id, u1.realname as supplier_realname, s.create_date as supplier_create_date, s.create_user as supplier_create_user, s.update_date as supplier_update_date, s.update_user as supplier_update_user, op.product_id, op.product_number, op.product_name, op.product_price, op.create_user as product_create_user, op.create_date as prodcut_create_date
+    from t_order o LEFT JOIN t_order_supplier s ON o.id = s.order_id LEFT JOIN t_user u ON o.create_user = u.id left join t_order_product op on o.id = op.order_id LEFT JOIN t_user as u1 on s.user_id = u1.id
     <where>
       <if test="isSupplier == true">
         (s.user_id = #{userId,jdbcType=BIGINT} OR o.create_user = #{userId,jdbcType=BIGINT} OR o.update_user = #{userId,jdbcType=BIGINT})
@@ -77,10 +100,10 @@
         AND (o.content like CONCAT('%',#{queryKey, jdbcType=VARCHAR},'%') OR o.recipients like CONCAT('%',#{queryKey, jdbcType=VARCHAR},'%') OR o.recipients_phone like CONCAT('%',#{queryKey, jdbcType=VARCHAR},'%'))
       </if>
       <if test="distributor != null and distributor != ''">
-        AND (u.realname like CONCAT('%',#{distributor, jdbcType=VARCHAR},'%') OR u.phone like CONCAT('%',#{distributor, jdbcType=VARCHAR},'%'))
+        AND (u.realname like CONCAT('%',#{distributor, jdbcType=VARCHAR},'%') OR u.username like CONCAT('%',#{distributor, jdbcType=VARCHAR},'%'))
       </if>
       <if test="agents != null and agents != ''">
-        AND o.create_user IN
+        AND o.agent_id IN
         <foreach item="item" collection="agents" open="(" separator="," close=")">
           #{item}
         </foreach>
@@ -96,15 +119,15 @@
     <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into t_order (id, product_id, content, 
-      recipients, recipients_phone, recipients_address, 
-      payment, pay_type, status, 
+    insert into t_order (id, order_no, content,
+      recipients_id, recipients, recipients_phone, recipients_address,
+      payment, pay_type, status, pay_channel, out_trade_no, agent_id, source, user_type,review_date, pay_date,
       create_date, create_user, update_date, 
       update_user)
-    values (#{id,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
-      #{recipients,jdbcType=BIGINT}, #{recipientsPhone,jdbcType=VARCHAR}, #{recipientsAddress,jdbcType=VARCHAR}, 
-      #{payment,jdbcType=DECIMAL}, #{payType,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}, 
+    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+      #{recipients_id,jdbcType=BIGINT}, #{recipients,jdbcType=VARCHAR}, #{recipientsPhone,jdbcType=VARCHAR}, #{recipientsAddress,jdbcType=VARCHAR},
+      #{payment,jdbcType=DECIMAL}, #{payType,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{payChannel,jdbcType=VARCHAR}, #{outTradeNo,jdbcType=VARCHAR},
+      #{agentId, jdbcType=BIGINT}, #{source,jdbcType=VARCHAR}, #{userType,jdbcType=VARCHAR}, #{reviewate,jdbcType=TIMESTAMP}, #{payate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP},
       #{updateUser,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.xianqu.bean.Order" useGeneratedKeys="true" keyProperty="id">
@@ -113,11 +136,14 @@
       <if test="id != null">
         id,
       </if>
-      <if test="productId != null">
-        product_id,
+      <if test="orderNo != null">
+        order_no,
       </if>
       <if test="content != null">
         content,
+      </if>
+      <if test="recipientsId != null">
+        recipients_id,
       </if>
       <if test="recipients != null">
         recipients,
@@ -134,8 +160,29 @@
       <if test="payType != null">
         pay_type,
       </if>
+      <if test="payChannel != null">
+        pay_channel,
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no,
+      </if>
       <if test="status != null">
         status,
+      </if>
+      <if test="agentId != null">
+        agent_id,
+      </if>
+      <if test="source != null">
+        source,
+      </if>
+      <if test="userType != null">
+        user_type,
+      </if>
+      <if test="reviewDate != null">
+        review_date,
+      </if>
+      <if test="payDate != null">
+        pay_date,
       </if>
       <if test="createDate != null">
         create_date,
@@ -154,14 +201,17 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="productId != null">
-        #{productId,jdbcType=BIGINT},
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
       </if>
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
       </if>
+      <if test="recipientsId != null">
+        #{recipientsId,jdbcType=BIGINT},
+      </if>
       <if test="recipients != null">
-        #{recipients,jdbcType=BIGINT},
+        #{recipients,jdbcType=VARCHAR},
       </if>
       <if test="recipientsPhone != null">
         #{recipientsPhone,jdbcType=VARCHAR},
@@ -175,8 +225,29 @@
       <if test="payType != null">
         #{payType,jdbcType=VARCHAR},
       </if>
+      <if test="payChannel != null">
+        #{payChannel,jdbcType=VARCHAR},
+      </if>
+      <if test="outTradeNo != null">
+        #{outTradeNo,jdbcType=VARCHAR},
+      </if>
       <if test="status != null">
         #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="agentId != null">
+        #{agentId,jdbcType=BIGINT},
+      </if>
+      <if test="source != null">
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null">
+        #{userType,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewDate != null">
+        #{reviewDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payDate != null">
+        #{payDate,jdbcType=TIMESTAMP},
       </if>
       <if test="createDate != null">
         #{createDate,jdbcType=TIMESTAMP},
@@ -195,14 +266,17 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.xianqu.bean.Order">
     update t_order
     <set>
-      <if test="productId != null">
-        product_id = #{productId,jdbcType=BIGINT},
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
       </if>
       <if test="content != null">
         content = #{content,jdbcType=VARCHAR},
       </if>
+      <if test="recipientsId != null">
+        recipients_id = #{recipientsId,jdbcType=BIGINT},
+      </if>
       <if test="recipients != null">
-        recipients = #{recipients,jdbcType=BIGINT},
+        recipients = #{recipients,jdbcType=VARCHAR},
       </if>
       <if test="recipientsPhone != null">
         recipients_phone = #{recipientsPhone,jdbcType=VARCHAR},
@@ -216,8 +290,29 @@
       <if test="payType != null">
         pay_type = #{payType,jdbcType=VARCHAR},
       </if>
+      <if test="payChannel != null">
+        pay_channel = #{payChannel,jdbcType=VARCHAR},
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+      </if>
       <if test="status != null">
         status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="agentId != null">
+        agent_id = #{agentId,jdbcType=BIGINT},
+      </if>
+      <if test="source != null">
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null">
+        user_type = #{userType,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewDate != null">
+        review_date = #{reviewDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payDate != null">
+        pay_date = #{payDate,jdbcType=TIMESTAMP},
       </if>
       <if test="createDate != null">
         create_date = #{createDate,jdbcType=TIMESTAMP},
@@ -232,22 +327,6 @@
         update_user = #{updateUser,jdbcType=BIGINT},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xianqu.bean.Order">
-    update t_order
-    set product_id = #{productId,jdbcType=BIGINT},
-      content = #{content,jdbcType=VARCHAR},
-      recipients = #{recipients,jdbcType=BIGINT},
-      recipients_phone = #{recipientsPhone,jdbcType=VARCHAR},
-      recipients_address = #{recipientsAddress,jdbcType=VARCHAR},
-      payment = #{payment,jdbcType=DECIMAL},
-      pay_type = #{payType,jdbcType=VARCHAR},
-      status = #{status,jdbcType=VARCHAR},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      create_user = #{createUser,jdbcType=BIGINT},
-      update_date = #{updateDate,jdbcType=TIMESTAMP},
-      update_user = #{updateUser,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
